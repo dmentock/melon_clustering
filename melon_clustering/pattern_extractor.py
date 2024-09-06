@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.mixture import GaussianMixture
 from sklearn.manifold import MDS
 from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 from collections import OrderedDict
 from typing import List, Tuple, Dict
 
@@ -30,7 +30,6 @@ class PatternExtractor:
             if pattern not in pattern_dict:
                 pattern_dict[pattern] = 0
             pattern_dict[pattern] += 1
-
         return pattern_dict
 
     def get_token_list(self, sentences: List[str]) -> List[List[str]]:
@@ -40,13 +39,11 @@ class PatternExtractor:
 
     def extract_patterns_flat(self, sentences_by_morphology: Dict[str, List[str]]) -> Dict:
         pattern_dict = {}
-
         for morphology, sentences in sentences_by_morphology.items():
             for tokens in self.get_token_list(sentences):
                 for idx, token in enumerate(tokens):
                     if token == morphology.lower():
                         pattern_dict = self._build_pattern_flat(tokens, idx, pattern_dict)
-
         filtered_pattern_dict = OrderedDict(
             {pattern: count for pattern, count in sorted(pattern_dict.items(), key=lambda x: x[1], reverse=True)
              if count >= self.filter_threshold}
@@ -56,53 +53,22 @@ class PatternExtractor:
     def map_sentences_to_patterns(self, sentences_by_morphology: Dict[str, List[str]]) -> List[Tuple[str, List[int]]]:
         sentence_pattern_mapping = []
         self.pattern_list = list(self.mask_patterns.keys())
-
         for morphology, sentences in sentences_by_morphology.items():
             for sentence in self.get_token_list(sentences):
                 tokens = ['<START>'] + [token.lower() for token in sentence] + ['END']
                 matched_indices = set()
-
                 for idx, token in enumerate(tokens):
                     if token == morphology.lower():
                         window_start = max(0, idx - self.radius)
                         window_end = min(len(tokens), idx + self.radius + 1)
                         window = tokens[window_start:window_end]
                         window[idx - window_start] = '<MASK>'
-
                         if ('<MASK>',) in self.pattern_list:
                             matched_indices.add(self.pattern_list.index(('<MASK>',)))
-
                         for i, pattern in enumerate(self.pattern_list):
                             pattern_length = len(pattern)
                             for j in range(len(window) - pattern_length + 1):
                                 if tuple(window[j:j + pattern_length]) == pattern:
                                     matched_indices.add(i)
-
                 sentence_pattern_mapping.append((sentence, sorted(matched_indices)))
-
         return sentence_pattern_mapping
-
-    def compute_mds(self, sentence_pattern_mapping: List[Tuple[str, List[int]]]) -> np.ndarray:
-        distance_matrix = self.create_distance_matrix(sentence_pattern_mapping)
-        mds = MDS(n_components=2, dissimilarity="precomputed", random_state=42)
-        points_2d = mds.fit_transform(distance_matrix)
-        return points_2d
-
-    def jaccard_distance(self, set1: List[int], set2: List[int]) -> float:
-        intersection = len(set(set1).intersection(set(set2)))
-        union = len(set(set1).union(set(set2)))
-        return 1 - intersection / union if union != 0 else 1
-
-    def create_distance_matrix(self, sentence_pattern_mapping: List[Tuple[str, List[int]]]) -> np.ndarray:
-        num_sentences = len(sentence_pattern_mapping)
-        distance_matrix = np.zeros((num_sentences, num_sentences))
-
-        for i in range(num_sentences):
-            for j in range(i, num_sentences):
-                set1 = sentence_pattern_mapping[i][1]
-                set2 = sentence_pattern_mapping[j][1]
-                dist = self.jaccard_distance(set1, set2)
-                distance_matrix[i, j] = dist
-                distance_matrix[j, i] = dist
-
-        return distance_matrix
