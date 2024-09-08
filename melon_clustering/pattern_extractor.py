@@ -6,6 +6,7 @@ from sklearn.metrics import silhouette_score
 from collections import OrderedDict
 from typing import List, Tuple, Dict
 import re
+import yaml
 
 class PatternExtractor:
     def __init__(self, language: str, radius: int = 5, filter_threshold: int = 3):
@@ -15,23 +16,33 @@ class PatternExtractor:
         self.pattern_list = []
         self.mask_patterns = {}
 
+    def load_sentences(self, path):
+        with open(path, 'r', encoding='utf-8') as f:
+        # with open(SENTENCES_DIR / 'erinnern_shortened.yaml', 'r', encoding='utf-8') as f:
+            sentences_dict = yaml.safe_load(f)
+
+        for morphology, sentences in sentences_dict.items():
+            for i, sentence in enumerate(sentences):
+                if self.language == 'jp':
+                    sentences_dict[morphology][i] = sentence.replace(' ', '')
+        return sentences_dict
+
     def _build_pattern_flat(self, sentence_tokens: List[str], idx: int, pattern_dict: Dict) -> Dict:
         window_start = max(0, idx - self.radius)
         window_end = min(len(sentence_tokens), idx + self.radius + 1)
         window = sentence_tokens[window_start:window_end]
         window[idx - window_start] = '<MASK>'
         sentence_patterns = set()
-        pattern_length = len(window)
-        for n in range(1, pattern_length + 1):
-            for i in range(pattern_length - n + 1):
+        for n in range(1, len(window) + 1):
+            for i in range(len(window) - n + 1):
                 pattern = tuple(window[i:i+n])
                 if '<MASK>' in pattern:
                     sentence_patterns.add(pattern)
+
         for pattern in sentence_patterns:
             if pattern not in pattern_dict:
                 pattern_dict[pattern] = 0
             pattern_dict[pattern] += 1
-        print("pattern_dict",pattern_dict)
         return pattern_dict
 
     def get_token_list(self, sentences: List[str]) -> List[List[str]]:
@@ -42,15 +53,12 @@ class PatternExtractor:
     def morphology_in_token(self, morphology, token):
         if morphology.lower() in token.lower():
             trailing_part = re.sub(re.escape(morphology.lower()), '', token.lower(), count=1)
-            print("hah",trailing_part)
             if not bool(re.search(r'[a-z]', trailing_part)):
-                print("TRH")
                 return True
         return False
 
     def extract_patterns_flat(self, sentences_by_morphology: Dict[str, List[str]]) -> Dict:
         pattern_dict = {}
-
         for morphology, sentences in sentences_by_morphology.items():
             for tokens in self.get_token_list(sentences):
                 for idx, token in enumerate(tokens):
@@ -62,31 +70,32 @@ class PatternExtractor:
              if count >= self.filter_threshold}
         )
         self.mask_patterns = filtered_pattern_dict
+        self.pattern_list = list(self.mask_patterns.keys())
 
     def map_sentences_to_patterns(self, sentences_by_morphology: Dict[str, List[str]]) -> List[Tuple[str, List[int]]]:
         sentence_pattern_mapping = []
-        self.pattern_list = list(self.mask_patterns.keys())
-
+        print("sentences_by_morphology",sentences_by_morphology)
         for morphology, sentences in sentences_by_morphology.items():
-            for sentence in self.get_token_list(sentences):
-                tokens = ['<START>'] + [token.lower() for token in sentence] + ['END']
+            for sentence_tokens in self.get_token_list(sentences):
                 matched_indices = set()
-                for idx, token in enumerate(tokens):
+                print(f"\nProcessing sentence: {sentence_tokens}")
+                for idx, token in enumerate(sentence_tokens):
                     if self.morphology_in_token(morphology, token):
                         window_start = max(0, idx - self.radius)
-                        window_end = min(len(tokens), idx + self.radius + 1)
-                        window = tokens[window_start:window_end]
+                        window_end = min(len(sentence_tokens), idx + self.radius + 1)
+                        window = sentence_tokens[window_start:window_end]
                         window[idx - window_start] = '<MASK>'
-                        print("window",window)
-                        if ('<MASK>',) in self.pattern_list:
-                            matched_indices.add(self.pattern_list.index(('<MASK>',)))
+                        print(f"Window for token '{token}' (at index {idx}): {window}")
 
-                        for i, pattern in enumerate(self.pattern_list):
+                        # Check if this window matches any patterns
+                        for pattern_idx, pattern in enumerate(self.pattern_list):
                             pattern_length = len(pattern)
                             for j in range(len(window) - pattern_length + 1):
                                 if tuple(window[j:j + pattern_length]) == pattern:
-                                    matched_indices.add(i)
+                                    matched_indices.add(pattern_idx)
+                                    print(f"Pattern {pattern} matched at index {j} in window")
 
-                sentence_pattern_mapping.append((sentence, sorted(matched_indices)))
+                sentence_pattern_mapping.append((sentence_tokens, sorted(matched_indices)))
+                print(f"Matched patterns: {sorted(matched_indices)}")
 
         return sentence_pattern_mapping
