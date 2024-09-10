@@ -1,3 +1,5 @@
+_cache
+_legacy
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
