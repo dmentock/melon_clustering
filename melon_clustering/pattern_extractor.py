@@ -131,10 +131,15 @@ class PatternExtractor:
             parents = []
             for node in node_group:
                 if node != node_with_smallest_id:
-                    parents.extend(self.get_parents_by_id(node.id))
                     node_with_smallest_id.children.update(node.children)
-                    self.child_to_parents[node_with_smallest_id.id].extend(self.child_to_parents.pop(node.id))
-                    self.word_to_ids[node_with_smallest_id.word].remove(node.id)
+                    for child_node in node.children.values():
+                        self.child_to_parents[child_node.id].remove(node.id)
+                        self.child_to_parents[child_node.id].append(node_with_smallest_id.id)
+                    parent_ids = self.child_to_parents.pop(node.id)
+                    self.child_to_parents[node_with_smallest_id.id].extend(parent_ids)
+                    for parent_id in parent_ids:
+                        self.get_node_by_id(parent_id).children[word] = node_with_smallest_id
+                    self.word_to_ids[word].remove(node.id)
 
             for parent_node in parents:
                 parent_node.children[word] = node_with_smallest_id
