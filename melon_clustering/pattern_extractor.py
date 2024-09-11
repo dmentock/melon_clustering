@@ -1,6 +1,10 @@
 from sklearn.cluster import KMeans
 from sklearn.cluster import AgglomerativeClustering, DBSCAN
 from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.decomposition import TruncatedSVD
+from sklearn.manifold import MDS
+from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict, deque
@@ -18,7 +22,8 @@ class PatternExtractor:
         self.preceding_tree = Node('<ROOT>', 0)
         self.following_tree = Node('<ROOT>', 1)
         self.node_counter = 2
-        self.word_to_ids = defaultdict(list)
+        self.word_to_preceding_ids = defaultdict(list)
+        self.word_to_following_ids = defaultdict(list)
         self.id_to_node = {0: self.preceding_tree, 1: self.following_tree}
         self.child_to_parents = defaultdict(list)
         self.node_embeddings = {}  # Store embeddings for each node
@@ -26,26 +31,28 @@ class PatternExtractor:
     def add_start_end_flags_lower(self, sentences):
         return [f"<START> {sentence.lower()} <END>" for sentence in sentences]
 
-    def get_or_create_node(self, current_tree, word, parent_id=None):
+    def get_or_create_node(self, current_tree, word, parent_id=None, direction='preceding'):
+        word_to_ids = self.word_to_preceding_ids if direction == 'preceding' else self.word_to_following_ids
         if word not in current_tree.children:
             new_node = Node(word, self.node_counter)
             current_tree.children[word] = new_node
-            self.word_to_ids[word].append(self.node_counter)
+            word_to_ids[word].append(self.node_counter)
             self.id_to_node[self.node_counter] = new_node
-            if parent_id is not None and parent_id not in self.child_to_parents[self.node_counter]:
+            if parent_id is not None:
                 self.child_to_parents[self.node_counter].append(parent_id)
             self.node_counter += 1
         else:
             child_id = current_tree.children[word].id
-            if parent_id is not None and parent_id not in self.child_to_parents[child_id]:
+            if parent_id is not None:
                 self.child_to_parents[child_id].append(parent_id)
         return current_tree.children[word]
 
     def add_to_tree(self, words, direction, count=1):
-        current_tree = self.preceding_tree if direction == 'preceding' else self.following_tree
         if direction == 'preceding':
+            current_tree = self.preceding_tree
             word_range = range(len(words) - 1, -1, -1)
         else:
+            current_tree = self.following_tree
             word_range = range(len(words))
 
         parent_id = current_tree.id
@@ -80,8 +87,10 @@ class PatternExtractor:
         print("\nFollowing Tree (after <MASK>):")
         self.print_tree(self.following_tree)
 
-    def get_nodes_by_word(self, word):
-        ids = self.word_to_ids.get(word, [])
+    def get_nodes_by_word(self, word, direction):
+        # Use the correct dictionary based on the direction
+        word_to_ids = self.word_to_preceding_ids if direction == 'preceding' else self.word_to_following_ids
+        ids = word_to_ids.get(word, [])
         return {self.id_to_node[id] for id in ids}
 
     def get_node_by_id(self, id):
@@ -91,8 +100,9 @@ class PatternExtractor:
         parent_ids = self.child_to_parents.get(id, [])
         return [self.id_to_node[parent_id] for parent_id in parent_ids]
 
-    def optimize_tree(self, word, overlap_threshold=1):
-        all_nodes = self.get_nodes_by_word(word)
+    def optimize_tree(self, word, direction, overlap_threshold=1):
+        word_to_ids = self.word_to_preceding_ids if direction == 'preceding' else self.word_to_following_ids
+        all_nodes = self.get_nodes_by_word(word, direction)
         groups_with_overlap_children = []
         parent_node_ids = []
 
@@ -142,11 +152,12 @@ class PatternExtractor:
                         if parent_id not in self.child_to_parents[node_with_smallest_id.id]:
                             self.child_to_parents[node_with_smallest_id.id].append(parent_id)
                         self.get_node_by_id(parent_id).children[word] = node_with_smallest_id
-                    self.word_to_ids[word].remove(node.id)
+                    word_to_ids[word].remove(node.id)
+                    self.node_counter-=1
 
 
         for node_id in set(parent_node_ids):
-            self.optimize_tree(self.id_to_node[node_id].word, overlap_threshold=overlap_threshold)
+            self.optimize_tree(self.id_to_node[node_id].word, direction, overlap_threshold=overlap_threshold)
 
     def initialize_node_embeddings(self, embedding_size=100):
         """
@@ -217,40 +228,38 @@ class PatternExtractor:
                 sentence_list.append(sentence)
         return np.array(sentence_embeddings), sentence_list
 
-    def cluster_sentences(self, embeddings, n_clusters=3):
-        """
-        Apply K-Means clustering to sentence embeddings.
-        """
+    def cluster_embeddings(self, embeddings, n_clusters=3):
+        # Apply K-Means clustering to the embeddings
         kmeans = KMeans(n_clusters=n_clusters)
         clusters = kmeans.fit_predict(embeddings)
         return clusters
 
-    def reduce_dimensionality(self, embeddings, n_components=2):
-        """
-        Reduce dimensionality of embeddings for visualization.
-        """
-        pca = PCA(n_components=n_components)
-        reduced_embeddings = pca.fit_transform(embeddings)
-        return reduced_embeddings
+    def reduce_dimensionality(self, embeddings, method='pca', n_components=2):
+        # Reduce dimensionality using PCA or t-SNE for visualization
+        if method == 'pca':
+            reducer = PCA(n_components=n_components)
+        elif method == 'tsne':
+            perplexity = min(30, len(embeddings) - 1)
+            reducer = TSNE(n_components=n_components, perplexity=perplexity)
 
-    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list, title_appendix=None):
-        """
-        Visualize clusters using a 2D plot.
-        """
-        plt.figure(figsize=(10, 10))
+        reduced_embeddings = reducer.fit_transform(embeddings)
+        return reduced_embeddings
+    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list=None, method='pca', appendix=None):
+        # Visualize clusters using a 2D scatter plot
+        plt.figure(figsize=(9, 9))
         scatter = plt.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], c=clusters, cmap='viridis')
-        # plt.colorbar(scatter)
 
         # Annotate sentences for better interpretability
-        for i, sentence in enumerate(sentence_list):
-            plt.annotate(sentence, (reduced_embeddings[i, 0], reduced_embeddings[i, 1]), fontsize=8, alpha=0.7)
+        if sentence_list:
+            for i, sentence in enumerate(sentence_list):
+                plt.annotate(sentence, (reduced_embeddings[i, 0], reduced_embeddings[i, 1]), fontsize=8, alpha=0.7)
 
-        plt.title(f"Sentence Clustering Visualization{', '+title_appendix if title_appendix else ''}")
-        plt.xlabel("PCA Component 1")
-        plt.ylabel("PCA Component 2")
+        plt.title(f"Sentence Clustering Visualization ({method}{' ' + str(appendix) if appendix else ''})")
+        plt.xlabel(f"{method.upper()} Component 1")
+        plt.ylabel(f"{method.upper()} Component 2")
         plt.show()
 
     def initialize(self, sentences_dict, overlap_threshold = 1):
         self.create_tree_mask_as_root(sentences_dict)
-        self.optimize_tree('<START>', overlap_threshold=overlap_threshold)
-        self.optimize_tree('<END>', overlap_threshold=overlap_threshold)
+        self.optimize_tree('<START>', 'forward', overlap_threshold=overlap_threshold)
+        self.optimize_tree('<END>', 'preceding', overlap_threshold=overlap_threshold)
