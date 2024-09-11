@@ -128,21 +128,22 @@ class PatternExtractor:
         for node_group in [group['nodes'] for group in groups_with_overlap_children if len(group['nodes']) > 1]:
             node_with_smallest_id = min(node_group, key=lambda node: node.id)
             new_nodes.append(node_with_smallest_id)
-            parents = []
             for node in node_group:
                 if node != node_with_smallest_id:
                     node_with_smallest_id.children.update(node.children)
                     for child_node in node.children.values():
-                        self.child_to_parents[child_node.id].remove(node.id)
-                        self.child_to_parents[child_node.id].append(node_with_smallest_id.id)
+                        if node.id in self.child_to_parents[child_node.id]:
+                            self.child_to_parents[child_node.id].remove(node.id)
+                        if node_with_smallest_id.id not in self.child_to_parents[child_node.id]:
+                            self.child_to_parents[child_node.id].append(node_with_smallest_id.id)
+
                     parent_ids = self.child_to_parents.pop(node.id)
-                    self.child_to_parents[node_with_smallest_id.id].extend(parent_ids)
                     for parent_id in parent_ids:
+                        if parent_id not in self.child_to_parents[node_with_smallest_id.id]:
+                            self.child_to_parents[node_with_smallest_id.id].append(parent_id)
                         self.get_node_by_id(parent_id).children[word] = node_with_smallest_id
                     self.word_to_ids[word].remove(node.id)
 
-            for parent_node in parents:
-                parent_node.children[word] = node_with_smallest_id
 
         for node_id in set(parent_node_ids):
             self.optimize_tree(self.id_to_node[node_id].word, overlap_threshold=overlap_threshold)
