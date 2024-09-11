@@ -91,55 +91,66 @@ class PatternExtractor:
         parent_ids = self.child_to_parents.get(id, [])
         return [self.id_to_node[parent_id] for parent_id in parent_ids]
 
-    def optimize_tree(self, word, overlap = 1):
-        print("optimize", word)
+    def optimize_tree(self, word, overlap_threshold=1):
         all_nodes = self.get_nodes_by_word(word)
-        groups = []
-        print("all_nodes",all_nodes)
+        print("Processing word:", word)
+        groups_with_overlap_children = []
+        parent_node_ids = []
+
         for node in all_nodes:
-            # Get the current node's child structure as a set of (word, id) tuples
-            child_structure = set((child.word, child.id) for child in node.children.values())
-            print("child_structure",child_structure)
-            # Flag to check if the node is added to an existing group
+            parent_node_ids.extend(self.child_to_parents[node.id])
+            # Focus only on immediate children by using their word alone, ignoring their ID
+            child_structure = set(child.word for child in node.children.values())
+            print(f"Node {node.id} ('{node.word}') children: {child_structure}")
             added_to_group = False
 
-            # Iterate over existing groups to find a match based on the 80% overlap rule
-            for group in groups:
+            # Iterate over the groups to calculate the overlap based on immediate children
+            for group in groups_with_overlap_children:
                 group_child_structure = group['child_structure']
-
-                # Calculate the intersection between the current node's child structure and the group's structure
                 intersection = child_structure.intersection(group_child_structure)
 
-                # Calculate the percentage overlap for both the node and the group
+                # Calculate overlap based on immediate children
                 overlap_node = len(intersection) / len(child_structure) if child_structure else 0
                 overlap_group = len(intersection) / len(group_child_structure) if group_child_structure else 0
 
-                # If both overlaps are at least 80%, group the node with this group
-                print("overlap_node",overlap_node)
-                print("overlap_group",overlap_group)
-                if overlap_node >= overlap and overlap_group >= overlap:
+                print(f"Node {node.id} overlap with group: {overlap_node}, {overlap_group}")
+
+                # Merge if overlap on immediate children is above the threshold
+                if overlap_node >= overlap_threshold or overlap_group >= overlap_threshold:
+                    print(f"Grouping Node {node.id} ('{node.word}') with group.")
                     group['nodes'].append(node)
+                    group['child_structure'] = group['child_structure'].union(child_structure)
                     added_to_group = True
                     break
 
-            # If no group satisfies the overlap condition, create a new group
             if not added_to_group:
-                groups.append({
+                groups_with_overlap_children.append({
                     'child_structure': child_structure,
                     'nodes': [node]
                 })
-        print("groups",groups)
-        for node_group in groups:
-            node_with_smallest_id = min(node_group['nodes'], key=lambda node: node.id)
+
+        print("groups_with_overlap_children:", groups_with_overlap_children)
+
+        # Merge nodes with sufficient overlap and update parent-child references
+        new_nodes = []
+        for node_group in [group['nodes'] for group in groups_with_overlap_children if len(group['nodes']) > 1]:
+            node_with_smallest_id = min(node_group, key=lambda node: node.id)
+            new_nodes.append(node_with_smallest_id)
             parents = []
-            for node in node_group['nodes']:
+            for node in node_group:
                 if node != node_with_smallest_id:
                     parents.extend(self.get_parents_by_id(node.id))
                     node_with_smallest_id.children.update(node.children)
+                    self.child_to_parents[node_with_smallest_id.id].extend(self.child_to_parents.pop(node.id))
+                    self.word_to_ids[node_with_smallest_id.word].remove(node.id)
+
             for parent_node in parents:
                 parent_node.children[word] = node_with_smallest_id
-            for parent in parents:
-                self.optimize_tree(parent.word, overlap=overlap)
+
+        # Recursively optimize for parent nodes
+        for node_id in set(parent_node_ids):
+            self.optimize_tree(self.id_to_node[node_id].word, overlap_threshold=overlap_threshold)
+
 
     def initialize_node_embeddings(self, embedding_size=100):
         """
@@ -243,7 +254,7 @@ class PatternExtractor:
         plt.ylabel("PCA Component 2")
         plt.show()
 
-    def initialize(self, sentences_dict, overlap = 1):
+    def initialize(self, sentences_dict, overlap_threshold = 1):
         self.create_tree_mask_as_root(sentences_dict)
-        self.optimize_tree('<START>', overlap=overlap)
-        self.optimize_tree('<END>', overlap=overlap)
+        self.optimize_tree('<START>', overlap_threshold=overlap_threshold)
+        self.optimize_tree('<END>', overlap_threshold=overlap_threshold)
