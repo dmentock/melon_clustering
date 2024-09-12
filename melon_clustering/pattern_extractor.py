@@ -99,11 +99,21 @@ class PatternExtractor:
 
     def optimize_tree(self, word, direction, overlap_threshold=1):
         word_to_ids = self.word_to_preceding_ids if direction == 'preceding' else self.word_to_following_ids
+
         all_nodes = self.get_nodes_by_word(word, direction)
         groups_with_overlap_children = []
         parent_node_ids = []
         for node in all_nodes:
             parent_node_ids.extend(self.child_to_parents[node.id])
+            if word in ['<START>', '<END>']:
+                if not groups_with_overlap_children:
+                    groups_with_overlap_children.append({
+                        'combined_structure': None,
+                        'nodes': [node]
+                    })
+                else:
+                    groups_with_overlap_children[-1]['nodes'].append(node)
+                continue
             child_structure = frozenset(child.word for child in node.children.values())  # Use frozenset for comparison
             parent_structure = set(parent.word for parent in self.get_parents_by_id(node.id))
             combined_structure = child_structure.union(parent_structure)
