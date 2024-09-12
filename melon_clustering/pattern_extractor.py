@@ -8,6 +8,7 @@ from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict, deque
+import re
 
 class Node:
     def __init__(self, word, id):
@@ -29,7 +30,10 @@ class PatternExtractor:
         self.node_embeddings = {}  # Store embeddings for each node
 
     def add_start_end_flags_lower(self, sentences):
-        return [f"<START> {sentence.lower()} <END>" for sentence in sentences]
+        res = []
+        for sentence in sentences:
+            res.append(re.sub(r'[^a-zA-Z\s]', '', sentence))
+        return [f"<START> {sentence.lower()} <END>" for sentence in res]
 
     def get_or_create_node(self, current_tree, word, parent_id, direction):
         word_to_ids = self.word_to_preceding_ids if direction == 'preceding' else self.word_to_following_ids
@@ -254,7 +258,7 @@ class PatternExtractor:
         reduced_embeddings = reducer.fit_transform(embeddings)
         return reduced_embeddings
 
-    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list=None, method='pca', appendix=None, save_path=None):
+    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list=None, method='pca', appendix=None, save_path=None, plot = True):
         # Visualize clusters using a 2D scatter plot
         plt.figure(figsize=(9, 9))
         scatter = plt.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], c=clusters, cmap='viridis')
@@ -274,7 +278,8 @@ class PatternExtractor:
             print(f"Plot saved to {save_path}")
 
         # Display the plot
-        plt.show()
+        if plot:
+            plt.show()
 
     def initialize(self, sentences_dict, overlap_threshold = 1):
         self.create_tree_mask_as_root(sentences_dict)
