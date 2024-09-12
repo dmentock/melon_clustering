@@ -31,7 +31,7 @@ class PatternExtractor:
     def add_start_end_flags_lower(self, sentences):
         return [f"<START> {sentence.lower()} <END>" for sentence in sentences]
 
-    def get_or_create_node(self, current_tree, word, parent_id=None, direction='preceding'):
+    def get_or_create_node(self, current_tree, word, parent_id, direction):
         word_to_ids = self.word_to_preceding_ids if direction == 'preceding' else self.word_to_following_ids
         if word not in current_tree.children:
             new_node = Node(word, self.node_counter)
@@ -59,7 +59,7 @@ class PatternExtractor:
 
         for i in word_range:
             current_word = words[i]
-            current_tree = self.get_or_create_node(current_tree, current_word, parent_id)
+            current_tree = self.get_or_create_node(current_tree, current_word, parent_id, direction)
             current_tree.count += count
             parent_id = current_tree.id
 
@@ -93,9 +93,6 @@ class PatternExtractor:
         ids = word_to_ids.get(word, [])
         return {self.id_to_node[id] for id in ids}
 
-    def get_node_by_id(self, id):
-        return self.id_to_node.get(id)
-
     def get_parents_by_id(self, id):
         parent_ids = self.child_to_parents.get(id, [])
         return [self.id_to_node[parent_id] for parent_id in parent_ids]
@@ -105,35 +102,28 @@ class PatternExtractor:
         all_nodes = self.get_nodes_by_word(word, direction)
         groups_with_overlap_children = []
         parent_node_ids = []
-
         for node in all_nodes:
             parent_node_ids.extend(self.child_to_parents[node.id])
             child_structure = set(child.word for child in node.children.values())
-
             parent_structure = set(parent.word for parent in self.get_parents_by_id(node.id))
-
             combined_structure = child_structure.union(parent_structure)
             added_to_group = False
-
             for group in groups_with_overlap_children:
                 group_structure = group['combined_structure']
                 intersection = combined_structure.intersection(group_structure)
                 overlap_ratio = 0
                 if len(combined_structure) > 0 and len(group_structure) > 0:
                     overlap_ratio = len(intersection) / max(len(combined_structure), len(group_structure))
-
                 if overlap_ratio >= overlap_threshold:
                     group['nodes'].append(node)
                     group['combined_structure'] = group['combined_structure'].union(combined_structure)
                     added_to_group = True
                     break
-
             if not added_to_group:
                 groups_with_overlap_children.append({
                     'combined_structure': combined_structure,
                     'nodes': [node]
                 })
-
         new_nodes = []
         for node_group in [group['nodes'] for group in groups_with_overlap_children if len(group['nodes']) > 1]:
             node_with_smallest_id = min(node_group, key=lambda node: node.id)
@@ -151,11 +141,9 @@ class PatternExtractor:
                     for parent_id in parent_ids:
                         if parent_id not in self.child_to_parents[node_with_smallest_id.id]:
                             self.child_to_parents[node_with_smallest_id.id].append(parent_id)
-                        self.get_node_by_id(parent_id).children[word] = node_with_smallest_id
+                        self.id_to_node.get(parent_id).children[word] = node_with_smallest_id
                     word_to_ids[word].remove(node.id)
-                    self.node_counter-=1
-
-
+                    self.node_counter -= 1
         for node_id in set(parent_node_ids):
             self.optimize_tree(self.id_to_node[node_id].word, direction, overlap_threshold=overlap_threshold)
 
@@ -261,5 +249,5 @@ class PatternExtractor:
 
     def initialize(self, sentences_dict, overlap_threshold = 1):
         self.create_tree_mask_as_root(sentences_dict)
-        self.optimize_tree('<START>', 'forward', overlap_threshold=overlap_threshold)
-        self.optimize_tree('<END>', 'preceding', overlap_threshold=overlap_threshold)
+        self.optimize_tree('<START>', 'preceding', overlap_threshold=overlap_threshold)
+        self.optimize_tree('<END>', 'forward', overlap_threshold=overlap_threshold)
