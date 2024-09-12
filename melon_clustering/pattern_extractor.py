@@ -104,21 +104,22 @@ class PatternExtractor:
         parent_node_ids = []
         for node in all_nodes:
             parent_node_ids.extend(self.child_to_parents[node.id])
-            child_structure = set(child.word for child in node.children.values())
+            child_structure = frozenset(child.word for child in node.children.values())  # Use frozenset for comparison
             parent_structure = set(parent.word for parent in self.get_parents_by_id(node.id))
             combined_structure = child_structure.union(parent_structure)
             added_to_group = False
             for group in groups_with_overlap_children:
                 group_structure = group['combined_structure']
                 intersection = combined_structure.intersection(group_structure)
-                overlap_ratio = 0
                 if len(combined_structure) > 0 and len(group_structure) > 0:
-                    overlap_ratio = len(intersection) / max(len(combined_structure), len(group_structure))
-                if overlap_ratio >= overlap_threshold:
-                    group['nodes'].append(node)
-                    group['combined_structure'] = group['combined_structure'].union(combined_structure)
-                    added_to_group = True
-                    break
+                    overlap_ratio_combined_structure = len(intersection) / len(combined_structure)
+                    overlap_ratio_group_structure = len(intersection) / len(group_structure)
+                    if overlap_ratio_combined_structure >= overlap_threshold or overlap_ratio_group_structure >= overlap_threshold:
+                        group['nodes'].append(node)
+                        group['combined_structure'] = group['combined_structure'].union(combined_structure)
+                        added_to_group = True
+                        break
+
             if not added_to_group:
                 groups_with_overlap_children.append({
                     'combined_structure': combined_structure,
@@ -129,23 +130,33 @@ class PatternExtractor:
             node_with_smallest_id = min(node_group, key=lambda node: node.id)
             new_nodes.append(node_with_smallest_id)
             for node in node_group:
-                if node != node_with_smallest_id:
-                    node_with_smallest_id.children.update(node.children)
-                    for child_node in node.children.values():
-                        if node.id in self.child_to_parents[child_node.id]:
-                            self.child_to_parents[child_node.id].remove(node.id)
-                        if node_with_smallest_id.id not in self.child_to_parents[child_node.id]:
-                            self.child_to_parents[child_node.id].append(node_with_smallest_id.id)
-
+                if node != node_with_smallest_id:  # node is duplicate
+                    node_with_smallest_id.children.update(node.children)  # Adopt children
+                    # Remove from id_to_node
+                    self.id_to_node.pop(node.id)
+                    # Remove from word_to_ids
+                    word_to_ids[word].remove(node.id)
+                    # Remove from child_to_parents, merge parents list with new main node
                     parent_ids = self.child_to_parents.pop(node.id)
                     for parent_id in parent_ids:
                         if parent_id not in self.child_to_parents[node_with_smallest_id.id]:
                             self.child_to_parents[node_with_smallest_id.id].append(parent_id)
-                        self.id_to_node.get(parent_id).children[word] = node_with_smallest_id
-                    word_to_ids[word].remove(node.id)
+                        # Update parent node's reference to the new node
+                        if word in self.id_to_node.get(parent_id).children:
+                            self.id_to_node.get(parent_id).children[word] = node_with_smallest_id
+
+                    # Update children's parent references
+                    for child_node in node.children.values():
+                        self.child_to_parents[child_node.id].remove(node.id)
+                        if node_with_smallest_id.id not in self.child_to_parents[child_node.id]:
+                            self.child_to_parents[child_node.id].append(node_with_smallest_id.id)
+
                     self.node_counter -= 1
+
         for node_id in set(parent_node_ids):
-            self.optimize_tree(self.id_to_node[node_id].word, direction, overlap_threshold=overlap_threshold)
+            if node_id in self.id_to_node:
+                self.optimize_tree(self.id_to_node[node_id].word, direction, overlap_threshold=overlap_threshold)
+
 
     def initialize_node_embeddings(self, embedding_size=100):
         """
