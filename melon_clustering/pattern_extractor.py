@@ -161,7 +161,7 @@ class PatternExtractor:
                         if node_with_smallest_id.id not in self.child_to_parents[child_node.id]:
                             self.child_to_parents[child_node.id].append(node_with_smallest_id.id)
 
-                    self.node_counter -= 1
+                    # self.node_counter -= 1
 
         for node_id in set(parent_node_ids):
             if node_id in self.id_to_node:
@@ -253,7 +253,8 @@ class PatternExtractor:
 
         reduced_embeddings = reducer.fit_transform(embeddings)
         return reduced_embeddings
-    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list=None, method='pca', appendix=None):
+
+    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list=None, method='pca', appendix=None, save_path=None):
         # Visualize clusters using a 2D scatter plot
         plt.figure(figsize=(9, 9))
         scatter = plt.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], c=clusters, cmap='viridis')
@@ -266,6 +267,13 @@ class PatternExtractor:
         plt.title(f"Sentence Clustering Visualization ({method}{' ' + str(appendix) if appendix else ''})")
         plt.xlabel(f"{method.upper()} Component 1")
         plt.ylabel(f"{method.upper()} Component 2")
+
+        # Save the plot if a save_path is provided
+        if save_path:
+            plt.savefig(save_path, format='png', bbox_inches='tight')
+            print(f"Plot saved to {save_path}")
+
+        # Display the plot
         plt.show()
 
     def initialize(self, sentences_dict, overlap_threshold = 1):
