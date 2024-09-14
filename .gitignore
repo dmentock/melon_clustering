@@ -1,5 +1,7 @@
 _cache
+_plots
 _legacy
+_sentences
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
