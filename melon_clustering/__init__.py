@@ -11,3 +11,5 @@ PLOT_DIR.mkdir(parents=True, exist_ok=True)
 
 # from .clustering import Clustering
 from .pattern_extractor import PatternExtractor
+from .pattern_extractor_gnn import PatternExtractorWithGNN
+from .load_sentences import Loader

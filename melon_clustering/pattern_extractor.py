@@ -32,7 +32,7 @@ class PatternExtractor:
     def add_start_end_flags_lower(self, sentences):
         res = []
         for sentence in sentences:
-            res.append(re.sub(r'[^a-zA-Z\s]', '', sentence))
+            res.append(re.sub(r'[^a-zA-Z\säüö]', '', sentence))
         return [f"<START> {sentence.lower()} <END>" for sentence in res]
 
     def get_or_create_node(self, current_tree, word, parent_id, direction):
