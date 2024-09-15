@@ -19,5 +19,4 @@ from .pattern_extractor_graph import PatternExtractorGraph, Node
 # from .pattern_extractor_stanza import PatternExtractor
 # from .pattern_extractor_gnn import PatternExtractorWithGNN
 from .cluster_evaluator import ClusterEvaluator
-from .cluster_manager import ClusterManager
 from .load_sentences import Loader
