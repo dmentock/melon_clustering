@@ -56,7 +56,7 @@ class ClusterManager:
         if annotate and sentences:
             for i, sentence in enumerate(sentences):
                 plt.annotate(sentence, (reduced_vectors[i, 0], reduced_vectors[i, 1]), fontsize=8, alpha=0.7)
-        # plt.legend(title='Cluster')
+        plt.legend(title='Cluster')
         plt.tight_layout()
         plt.show()
         self.logger.debug(f"Plotted clusters for {title}")
@@ -101,7 +101,6 @@ class ClusterManager:
 
         for dim_method in dim_methods:
             for cluster_method in cluster_methods:
-                # Perform dimensionality reduction
                 try:
                     if dim_method == 'LSA':
                         reduced_vectors = self.dimensionality_reduction(vectors, method='LSA', n_components=2)
@@ -118,7 +117,6 @@ class ClusterManager:
                     self.logger.error(f"Error in dimensionality reduction {dim_method}: {e}")
                     continue
 
-                # Perform clustering
                 try:
                     if cluster_method in ['KMeans', 'Agglomerative']:
                         labels = self.cluster_sentences(reduced_vectors, method=cluster_method, n_clusters=3)
@@ -131,20 +129,17 @@ class ClusterManager:
                     self.logger.error(f"Error in clustering {cluster_method}: {e}")
                     continue
 
-                # Store the cluster labels and reduced vectors
                 configurations[(dim_method, cluster_method)] = {
                     'labels': labels,
                     'reduced_vectors': reduced_vectors
                 }
 
-                # Plot individual cluster plot with annotations if specified
                 if plot_plt:
                     if annotate_plt:
                         sentences_for_plot = [sentence for _, sentence in sentence_paths]
                         title = f"{dim_method} + {cluster_method}"
                         self.plot_clusters(reduced_vectors, labels, title=title, sentences=sentences_for_plot, annotate=True)
 
-        # Optionally, plot all configurations grid
         if plot_seaborn:
             configurations_plot = {}
             for key, value in configurations.items():

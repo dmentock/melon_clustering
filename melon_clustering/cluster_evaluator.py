@@ -101,7 +101,11 @@ class ClusterEvaluator:
         self.logger.debug("Evaluated clusters.")
         return results
 
-    def evaluate_multiple_configurations(self, clustering_results: Dict[Tuple[str, str], Dict], plot = True) -> pd.DataFrame:
+    def evaluate_multiple_configurations(self,
+                                         clustering_results: Dict[Tuple[str, str], Dict],
+                                         ref_word: str,
+                                         plot: bool = True,
+                                         **extra_info) -> pd.DataFrame:
         results = []
         reference_clusters_ids = self.prepare_reference_clusters_ids()
 
@@ -132,9 +136,13 @@ class ClusterEvaluator:
         results_df = pd.DataFrame(results)
         if plot:
             pivot_df = results_df.pivot(index='Dimensionality Reduction', columns='Clustering Method', values='Average Jaccard Similarity')
-            plt.figure(figsize=(8, 6))
+
+            plt.figure(figsize=(10, 8))
             sns.heatmap(pivot_df, annot=True, cmap='RdYlGn', fmt=".4f", linewidths=.5)
-            plt.title('Average Jaccard Similarity Across Configurations')
+            title = f'Clustering accuracy for word "{ref_word}"'
+            if extra_info:
+                title += f" ({', '.join([f'{k}: {v}' for k, v in extra_info.items()])})"
+            plt.title(title)
             plt.tight_layout()
             plt.show()
 
@@ -146,3 +154,48 @@ class ClusterEvaluator:
         vectors_reference = vectors_combined[:num_reference_sentences]
         self.logger.debug("Isolated reference sentence embeddings.")
         return vectors_reference
+
+    def plot_average_similarity_per_dim_method(self, results_df: pd.DataFrame):
+        avg_per_dim = results_df.groupby('Dimensionality Reduction')['Average Jaccard Similarity'].mean().reset_index()
+
+        plt.figure(figsize=(8,6))
+        sns.barplot(data=avg_per_dim, x='Dimensionality Reduction', y='Average Jaccard Similarity', palette='Blues_d')
+        plt.title('Average Jaccard Similarity per Dimensionality Reduction Method')
+        plt.xlabel('Dimensionality Reduction Method')
+        plt.ylabel('Average Jaccard Similarity')
+        plt.ylim(0, 1)  # Assuming similarity scores are between 0 and 1
+        plt.tight_layout()
+        plt.show()
+
+        self.logger.debug("Plotted average similarity per dimensionality reduction method.")
+
+    def plot_average_similarity_per_cluster_method(self, results_df: pd.DataFrame):
+        avg_per_cluster = results_df.groupby('Clustering Method')['Average Jaccard Similarity'].mean().reset_index()
+
+        plt.figure(figsize=(8,6))
+        sns.barplot(data=avg_per_cluster, x='Clustering Method', y='Average Jaccard Similarity', palette='Greens_d')
+        plt.title('Average Jaccard Similarity per Clustering Method')
+        plt.xlabel('Clustering Method')
+        plt.ylabel('Average Jaccard Similarity')
+        plt.ylim(0, 1)
+        plt.tight_layout()
+        plt.show()
+
+        self.logger.debug("Plotted average similarity per clustering method.")
+
+    def plot_average_similarity_heatmap(self, list_of_results_df: List[pd.DataFrame], ref_word: str, **extra_info):
+        if not list_of_results_df:
+            return
+
+        combined_df = pd.concat(list_of_results_df)
+        avg_combined_df = combined_df.groupby(['Dimensionality Reduction', 'Clustering Method'])['Average Jaccard Similarity'].mean().reset_index()
+        pivot_df = avg_combined_df.pivot(index='Dimensionality Reduction', columns='Clustering Method', values='Average Jaccard Similarity')
+
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(pivot_df, annot=True, cmap='YlOrRd', fmt=".4f", linewidths=.5)
+        title = f'Clustering accuracy for word {ref_word}'
+        if extra_info:
+            title += f" ({', '.join([f'{k}: {v}' for k, v in extra_info.items()])})"
+        plt.title(title)
+        plt.tight_layout()
+        plt.show()
