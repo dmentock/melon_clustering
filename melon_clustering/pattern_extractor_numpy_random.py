@@ -18,7 +18,7 @@ class Node:
         self.children = {}
 
 
-class PatternExtractor:
+class PatternExtractorGraphNumpyRandom:
     def __init__(self):
         self.preceding_tree = Node('<ROOT>', 0)
         self.following_tree = Node('<ROOT>', 1)
@@ -240,48 +240,3 @@ class PatternExtractor:
                 sentence_embeddings.append(embedding)
                 sentence_list.append(sentence)
         return np.array(sentence_embeddings), sentence_list
-
-    def cluster_embeddings(self, embeddings, n_clusters=3):
-        # Apply K-Means clustering to the embeddings
-        kmeans = KMeans(n_clusters=n_clusters)
-        clusters = kmeans.fit_predict(embeddings)
-        return clusters
-
-    def reduce_dimensionality(self, embeddings, method='pca', n_components=2):
-        # Reduce dimensionality using PCA or t-SNE for visualization
-        if method == 'pca':
-            reducer = PCA(n_components=n_components)
-        elif method == 'tsne':
-            perplexity = min(30, len(embeddings) - 1)
-            reducer = TSNE(n_components=n_components, perplexity=perplexity)
-
-        reduced_embeddings = reducer.fit_transform(embeddings)
-        return reduced_embeddings
-
-    def visualize_clusters(self, reduced_embeddings, clusters, sentence_list=None, method='pca', appendix=None, save_path=None, plot = True):
-        # Visualize clusters using a 2D scatter plot
-        plt.figure(figsize=(9, 9))
-        scatter = plt.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], c=clusters, cmap='viridis')
-
-        # Annotate sentences for better interpretability
-        if sentence_list:
-            for i, sentence in enumerate(sentence_list):
-                plt.annotate(sentence, (reduced_embeddings[i, 0], reduced_embeddings[i, 1]), fontsize=8, alpha=0.7)
-
-        plt.title(f"Sentence Clustering Visualization ({method}{' ' + str(appendix) if appendix else ''})")
-        plt.xlabel(f"{method.upper()} Component 1")
-        plt.ylabel(f"{method.upper()} Component 2")
-
-        # Save the plot if a save_path is provided
-        if save_path:
-            plt.savefig(save_path, format='png', bbox_inches='tight')
-            print(f"Plot saved to {save_path}")
-
-        # Display the plot
-        if plot:
-            plt.show()
-
-    def initialize(self, sentences_dict, overlap_threshold = 1):
-        self.create_tree_mask_as_root(sentences_dict)
-        self.optimize_tree('<START>', 'preceding', overlap_threshold=overlap_threshold)
-        self.optimize_tree('<END>', 'forward', overlap_threshold=overlap_threshold)
