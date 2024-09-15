@@ -61,13 +61,12 @@ class PatternExtractorWithGNN(PatternExtractor):
         node_features = torch.randn((num_nodes, feature_dim), requires_grad=True)
         return node_features
 
-    def train_gnn(self, edge_index, node_features, hidden_dim=64, output_dim=100, epochs=200):
+    def initialize_node_embeddings(self, edge_index, node_features, hidden_dim=64, output_dim=100, epochs=200):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = GCN(input_dim=node_features.shape[1], hidden_dim=hidden_dim, output_dim=output_dim).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         edge_index = edge_index.to(device)
         node_features = node_features.to(device)
-
         model.train()
         for epoch in range(epochs):
             optimizer.zero_grad()
@@ -77,8 +76,7 @@ class PatternExtractorWithGNN(PatternExtractor):
             optimizer.step()
             if epoch % 10 == 0:
                 print(f'Epoch {epoch}, Loss: {loss.item()}')
-
-        return out.detach().cpu().numpy()
+        self.node_embeddings = out.detach().cpu().numpy()
 
     def generate_sentence_embeddings(self, gnn_node_embeddings, sentence, morphology, steepness=1.0):
         words = sentence.split()

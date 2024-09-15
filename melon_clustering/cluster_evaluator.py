@@ -5,8 +5,7 @@ from collections import defaultdict
 from typing import List, Dict, Tuple, Set
 import numpy as np
 import re
-
-from melon_clustering import PLOT_DIR
+from melon_clustering import PLOT_DIR, CACHE_DIR
 
 class ClusterEvaluator:
     def __init__(self, reference_clusters: List[List[Tuple[str, str]]]):
@@ -14,6 +13,7 @@ class ClusterEvaluator:
         self.reference_clusters = reference_clusters
         self.reference_sentence_ids = set()
         self.sentences_dict = defaultdict(list)
+        self.results_collection = []  # To store results for multiple configurations
 
     def add_sentences(self, sentence_clusters: List[List[Tuple[str, str]]], is_reference: bool = False) -> Dict[str, List[Tuple[int, str]]]:
         sentence_id = max(self.sentence_id_to_original.keys()) + 1 if self.sentence_id_to_original else 0
@@ -34,16 +34,9 @@ class ClusterEvaluator:
         additional_clusters = [[(sentence, word)] for word, sentences in additional_sentences.items() for sentence in sentences]
         return self.add_sentences(additional_clusters)
 
-    def normalize_sentence(self, sentence: str) -> str:
-        sentence = sentence.replace('<START>', '').replace('<END>', '').replace('<ROOT>', '').strip()
-        sentence = re.sub(r'\s+', ' ', sentence)
-        sentence = sentence.lower()
-        return sentence
-
     def replace_with_root(self, sentence: str, target_word: str) -> str:
         processed_sentence = re.sub(rf'\b{re.escape(target_word)}\b', '<ROOT>', sentence, flags=re.IGNORECASE)
         return processed_sentence
-        # return self.normalize_sentence(processed_sentence)
 
     def prepare_reference_clusters_ids(self) -> List[Set[int]]:
         ref_clusters_ids = []
@@ -107,14 +100,14 @@ class ClusterEvaluator:
                 'Average Jaccard Similarity': avg_similarity
             })
         results_df = pd.DataFrame(results)
-        self.plot_average_similarity_heatmap([results_df], f'Clustering accuracy for word {ref_word}',plot=plot, save=save, **extra_info)
+        self.results_collection.append(results_df)  # Store the result for future analysis
+        self.plot_average_similarity_heatmap([results_df], f'Clustering accuracy for word {ref_word}', plot=plot, save=save, **extra_info)
         return results_df
 
-
-    def isolate_reference_embeddings(self, vectors_combined: np.ndarray, num_additional_sentences: int) -> np.ndarray:
-        num_reference_sentences = len(self.reference_sentence_ids)
-        vectors_reference = vectors_combined[:num_reference_sentences]
-        return vectors_reference
+    def export_results(self):
+        combined_results_df = pd.concat(self.results_collection)
+        combined_results_df.to_csv(CACHE_DIR / 'clustering_results.csv', index=False)
+        return combined_results_df
 
     def plot_average_similarity_heatmap(self, list_of_results_df: List[pd.DataFrame], title: str, plot=True, save=False, **extra_info):
         if not list_of_results_df:

@@ -15,8 +15,9 @@ with open(PROJECT_ROOT / 'reference_clusters_de.yaml', 'r') as f:
 
 # from .clustering import Clustering
 from .pattern_extractor_one_hot import PatternExtractorOneHot
-from .pattern_extractor import PatternExtractor
-from .pattern_extractor_gnn import PatternExtractorWithGNN
+from .pattern_extractor_graph import PatternExtractorGraph, Node
+# from .pattern_extractor_stanza import PatternExtractor
+# from .pattern_extractor_gnn import PatternExtractorWithGNN
 from .cluster_evaluator import ClusterEvaluator
 from .cluster_manager import ClusterManager
 from .load_sentences import Loader

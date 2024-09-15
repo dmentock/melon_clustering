@@ -149,10 +149,12 @@ class Loader:
 
     @staticmethod
     def load_sentences_from_word(word, source_lang, cache = True, use_cache = True, preprocessor = None, n_sentences = None):
+        if n_sentences==0:
+            return {}
         path = SENTENCES_DIR / (word + (f"_{preprocessor}" if preprocessor else '') + '.yaml')
         if use_cache:
             if path.exists():
-                with open(path, 'r') as f:
+                with open(path, 'r', encoding='utf-8') as f:
                     sentences_dict = yaml.load(f, Loader=yaml.FullLoader)
                     # sentences_dict = yaml.safe_load(f)
                     return sentences_dict if not n_sentences else Loader.reduce_sentences(sentences_dict, n_sentences)

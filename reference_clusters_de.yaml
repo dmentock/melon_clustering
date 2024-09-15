@@ -1,0 +1,85 @@
+krass:
+  -
+    # "Krass" as an interjection at the beginning of the sentence
+    - ["Krass das habe ich noch nie gesehen", "Krass"]
+    - ["Krass das war wirklich beeindruckend", "Krass"]
+    - ["Krass wie schnell du das geschafft hast", "Krass"]
+  -
+    # "krass" as an adjective modifying a noun
+    - ["Das war eine krass schwierige Entscheidung", "krass"]
+    - ["Er hatte eine krass interessante Idee", "krass"]
+    - ["Die krasse Veränderung hat alle überrascht", "krasse"]
+  -
+    # "krass" as an adverb modifying an adjective or verb
+    - ["Die Party war krass gut organisiert", "krass"]
+    - ["Er hat das krass schnell erledigt", "krass"]
+    - ["Sie war krass begeistert von dem Ergebnis", "krass"]
+    - ["Der Vortrag war krass langweilig", "krass"]
+
+gaffen:
+  -
+    # "gaffen" in simple past tense
+    - ["Die Leute gafften als der Unfall passierte", "gafften"]
+    - ["Alle gafften auf das große Feuerwerk", "gafften"]
+    - ["Während alle gafften passierte etwas Unerwartetes", "gafften"]
+  -
+    # "gaffen" in present tense
+    - ["Er gafft immer wenn etwas Ungewöhnliches passiert", "gafft"]
+    - ["Die Leute gaffen ständig bei Baustellen", "gaffen"]
+    - ["Warum gafft er immer wenn er vorbeigeht", "gafft"]
+  -
+    # "gaffen" with a modal verb
+    - ["Sie konnte nicht aufhören zu gaffen", "gaffen"]
+    - ["Man sollte nicht so dreist gaffen", "gaffen"]
+    - ["Er wollte nicht dass alle ihn gafften", "gafften"]
+
+unglaubwuerdig:
+  -
+    # "unglaubwürdig" as an adjective modifying a noun
+    - ["Seine Geschichte war völlig unglaubwürdig", "unglaubwürdig"]
+    - ["Die Erklärung war unglaubwürdig und verwirrend", "unglaubwürdig"]
+    - ["Das klingt einfach zu unglaubwürdig um wahr zu sein", "unglaubwürdig"]
+  -
+    # Comparative or superlative forms of "unglaubwürdig"
+    - ["Er war noch unglaubwürdiger als der erste Zeuge", "unglaubwürdiger"]
+    - ["Das ist das unglaubwürdigste was ich je gehört habe", "unglaubwürdigste"]
+    - ["Ihre Darstellung wurde zunehmend unglaubwürdiger", "unglaubwürdiger"]
+  -
+    # "unglaubwürdig" in abstract or more complex sentence structures
+    - ["Obwohl seine Aussagen unglaubwürdig wirkten überzeugte er viele", "unglaubwürdig"]
+    - ["Es ist unglaubwürdig dass er so schnell laufen konnte", "unglaubwürdig"]
+    - ["Die Beweise waren schlichtweg unglaubwürdig", "unglaubwürdig"]
+
+freude:
+  -
+    # "Freude" as a noun in a descriptive sentence
+    - ["Die Freude war ihr ins Gesicht geschrieben", "Freude"]
+    - ["Die Freude über seinen Erfolg war spürbar", "Freude"]
+    - ["Die Freude über den Erfolg war riesig", "Freude"]
+  -
+    # "Freude" in a possessive or more complex phrase
+    - ["Er verspürte große Freude bei der Arbeit", "Freude"]
+    - ["Er konnte seine Freude kaum verbergen", "Freude"]
+    - ["Ihre Freude und Begeisterung waren ansteckend", "Freude"]
+  -
+    # "Freude" in idiomatic or abstract expressions
+    - ["Mit großer Freude nahm sie das Angebot an", "Freude"]
+    - ["Die Freude am Leben war ihr immer wichtig", "Freude"]
+    - ["Es war eine Freude mit ihm zu arbeiten", "Freude"]
+
+sauber:
+  -
+    # "sauber" as an adjective describing a state of cleanliness
+    - ["Das Haus war endlich sauber", "sauber"]
+    - ["Die Küche war sauber und ordentlich", "sauber"]
+    - ["Das Zimmer ist jetzt sauber", "sauber"]
+  -
+    # "sauber" as an adverb describing actions
+    - ["Er hat den Boden sauber gewischt", "sauber"]
+    - ["Sie hat die Aufgabe sauber erledigt", "sauber"]
+    - ["Das Problem wurde sauber gelöst", "sauber"]
+  -
+    # "Sauber" as an expression meaning "Well done"
+    - ["Sauber das hast du gut gemacht", "Sauber"]
+    - ["Sauber endlich haben wir es geschafft", "Sauber"]
+    - ["Sauber das war wirklich beeindruckend", "Sauber"]
