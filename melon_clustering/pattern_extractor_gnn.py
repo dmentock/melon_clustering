@@ -1,18 +1,10 @@
+import numpy as np
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
-from torch_geometric.data import Data
 import networkx as nx
-
-import matplotlib.pyplot as plt
 import numpy as np
-from collections import defaultdict, deque
-
-import torch
-import torch.nn as nn
-import random
-
-from melon_clustering import PatternExtractor, PLOT_DIR
+from melon_clustering import PatternExtractorGraph
 
 class GCN(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
@@ -26,26 +18,17 @@ class GCN(torch.nn.Module):
         x = self.conv2(x, edge_index)
         return x
 
-class Node:
-    def __init__(self, word, id):
-        self.word = word
-        self.id = id
-        self.count = 0
-        self.children = {}
-
-class PatternExtractorWithGNN(PatternExtractor):
-    def __init__(self, seed=1):
-        super().__init__()
-        self.graph = nx.DiGraph()  # store graph edges
-        self.node_embeddings = {}  # store GCN embeddings
-
-        torch.manual_seed(seed) # provide seed for reproducability
-        np.random.seed(seed)
-        random.seed(seed)
+class PatternExtractorGNN(PatternExtractorGraph):
+    def __init__(self, seed = 1):
+        super().__init__(seed = seed)
+        torch.manual_seed(seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed(seed)
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
+
+        self.graph = nx.DiGraph()
+        self.node_embeddings = {}
 
     def set_up_digraph(self):
         for node in self.id_to_node.values():
@@ -61,7 +44,10 @@ class PatternExtractorWithGNN(PatternExtractor):
         node_features = torch.randn((num_nodes, feature_dim), requires_grad=True)
         return node_features
 
-    def initialize_node_embeddings(self, edge_index, node_features, hidden_dim=64, output_dim=100, epochs=200):
+    def initialize_node_embeddings(self, hidden_dim=64, output_dim=100, epochs=200):
+        self.set_up_digraph()
+        edge_index = self.build_graph()
+        node_features = self.initialize_node_features(feature_dim=100)
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = GCN(input_dim=node_features.shape[1], hidden_dim=hidden_dim, output_dim=output_dim).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
@@ -74,34 +60,11 @@ class PatternExtractorWithGNN(PatternExtractor):
             loss = F.mse_loss(out, node_features)  # Unsupervised loss
             loss.backward()
             optimizer.step()
-            if epoch % 10 == 0:
-                print(f'Epoch {epoch}, Loss: {loss.item()}')
         self.node_embeddings = out.detach().cpu().numpy()
 
-    def generate_sentence_embeddings(self, gnn_node_embeddings, sentence, morphology, steepness=1.0):
-        words = sentence.split()
-        node_path = deque([0])
-        key_word_index = words.index(morphology.lower())
-        words_before = words[:key_word_index]
-        words_after = words[key_word_index + 1:]
-
-        current_node = self.preceding_tree
-        for word in words_before[::-1]:
-            if word in current_node.children:
-                current_node = current_node.children[word]
-                node_path.appendleft(current_node.id)
-
-        current_node = self.following_tree
-        for word in words_after:
-            if word in current_node.children:
-                current_node = current_node.children[word]
-                node_path.append(current_node.id)
-
-        return self.compute_weighted_sentence_embedding(gnn_node_embeddings, node_path, steepness=steepness)
-
-    def compute_weighted_sentence_embedding(self, gnn_node_embeddings, sentence_path, steepness=1.0):
-        weighted_embedding = np.zeros(gnn_node_embeddings.shape[1])
+    def compute_weighted_sentence_embedding(self, sentence_path, steepness=1.0):
+        weighted_embedding = np.zeros(self.node_embeddings.shape[1])
         for i, node_id in enumerate(sentence_path):
             weight = 1 - (1 / (1 + np.exp(-steepness * (i + 1))))
-            weighted_embedding += weight * gnn_node_embeddings[node_id]
+            weighted_embedding += weight * self.node_embeddings[node_id]
         return weighted_embedding / len(sentence_path)
