@@ -1,6 +1,6 @@
 krass:
   -
-    # "Krass" as an interjection at the beginning of the sentence
+    # "Krass" as an interjection at the beginning of the sentence (expressing amazement)
     - ["Krass das habe ich noch nie gesehen", "Krass"]
     - ["Krass das war wirklich beeindruckend", "Krass"]
     - ["Krass wie schnell du das geschafft hast", "Krass"]
@@ -9,60 +9,62 @@ krass:
     - ["Krass das kann doch nicht wahr sein", "Krass"]
     - ["Krass wie gut du das gemacht hast", "Krass"]
   -
-    # "krass" as an adjective modifying a noun
+    # "Krass" as an adjective modifying a noun (attributive use, directly before the noun)
     - ["Das war eine krass schwierige Entscheidung", "krass"]
     - ["Er hatte eine krass interessante Idee", "krass"]
-    - ["Die krasse Veränderung hat alle überrascht", "krasse"]
     - ["Sie hat eine krass schwere Aufgabe übernommen", "krass"]
     - ["Das ist eine krass neue Entwicklung", "krass"]
+    - ["Die krasse Veränderung hat alle überrascht", "krasse"]
     - ["Seine krasse Meinung hat viele schockiert", "krasse"]
     - ["Die krassen Anforderungen machen es schwer", "krassen"]
   -
-    # "krass" as an adverb modifying an adjective or verb
-    - ["Die Party war krass gut organisiert", "krass"]
-    - ["Er hat das krass schnell erledigt", "krass"]
-    - ["Sie war krass begeistert von dem Ergebnis", "krass"]
-    - ["Der Vortrag war krass langweilig", "krass"]
-    - ["Die Aufgaben wurden krass gut bewältigt", "krass"]
-    - ["Das Auto fährt krass schnell", "krass"]
-    - ["Er hat sich krass gut vorbereitet", "krass"]
+    # "Krass" as a predicative adjective (describing a noun phrase after a verb, such as "sein")
+    - ["Das war schon ein krasser Fehler", "krasser"]
+    - ["Diese Entscheidung war ein krasser Wendepunkt", "krasser"]
+    - ["Ihr Verhalten war ein krasser Fehler", "krasser"]
+    - ["Der Unfall war ein krasses Unglück", "krasses"]
+    - ["Seine Bemerkung war ein krasser Schock", "krasser"]
+    - ["Das war eine krasse Ungerechtigkeit", "krasse"]
+    - ["Es war ein krasser Moment für alle", "krasser"]
 schlimm:
   -
-    # Simple descriptive usage (adjective describing a situation)
-    - ["Das Wetter ist heute wirklich schlimm", "schlimm"]
-    - ["Die Lage ist schlimmer als gedacht", "schlimmer"]
-    - ["Es war schlimm was passiert ist", "schlimm"]
-    - ["Das ist eine schlimme Situation", "schlimme"]
-    - ["Ihr Zustand hat sich plötzlich verschlimmert", "verschlimmert"]
-    - ["Das war das Schlimmste was passieren konnte", "Schlimmste"]
+    # "Schlimm" as an adjective modifying a noun (attributive use)
+    - ["Das war eine schlimme Situation", "schlimme"]
+    - ["Die schlimme Nachricht hat uns alle getroffen", "schlimme"]
+    - ["Die schlimmste Entscheidung hat das Team gespalten", "schlimmste"]
+    - ["Die schlimme Krankheit hat ihr Leben verändert", "schlimme"]
+    - ["Das schlimmste Ergebnis hat niemand erwartet", "schlimmste"]
+    - ["Ihr schlimmes Verhalten hat alles ruiniert", "schlimmes"]
+    - ["Die schlimmsten Fehler passieren unter Druck", "schlimmsten"]
+    - ["Es war das schlimmste Ereignis des Jahres", "schlimmste"]
   -
-    # Comparative and superlative forms
-    - ["Das war der schlimmste Tag meines Lebens", "schlimmste"]
-    - ["Es könnte viel schlimmer sein", "schlimmer"]
-    - ["Das ist schlimmer als das was ich erwartet habe", "schlimmer"]
-    - ["Sie hat das schlimmste Ergebnis bekommen", "schlimmste"]
-    - ["Es war das schlimmste was ich je gesehen habe", "schlimmste"]
-    - ["Die schlimmste Phase ist jetzt vorbei", "schlimmste"]
+    # "Schlimm" as a predicative adjective (describing a noun phrase after a verb, such as "sein")
+    - ["Die Lage ist schlimmer als erwartet", "schlimmer"]
+    - ["Das war wirklich schlimm was passiert ist", "schlimm"]
+    - ["Es ist nicht so schlimm wie du denkst", "schlimm"]
+    - ["Das ist schon das Schlimmste was uns passieren konnte", "Schlimmste"]
+    - ["Die Situation ist schlimmer geworden", "schlimmer"]
   -
-    # Idiomatic and complex usage
-    - ["Es ist nicht so schlimm wie es aussieht", "schlimm"]
-    - ["So schlimm ist es wirklich nicht", "schlimm"]
-    - ["Wie schlimm war es wirklich", "schlimm"]
-    - ["Ich habe etwas Schlimmes gesehen", "Schlimmes"]
-    - ["Das Schlimmste steht uns noch bevor", "Schlimmste"]
-    - ["Es gibt Schlimmeres auf der Welt", "Schlimmeres"]
+    # Idiomatic or complex phrases using "schlimm"
+    - ["Schlimm wie das passiert ist", "Schlimm"]
+    - ["Wie konnte jemand so etwas Schlimmes tun", "Schlimmes"]
+    - ["Ich hoffe es ist nicht allzu schlimm", "schlimm"]
+    - ["Es gibt kaum etwas Schlimmeres als das", "Schlimmeres"]
+    - ["Das Schlimmste daran ist die Ungewissheit", "Schlimmste"]
+    - ["So schlimm habe ich es mir nicht vorgestellt", "schlimm"]
+    - ["Das war wirklich das Schlimmste was passieren konnte", "Schlimmste"]
 gucken:
   -
-    # Present tense (simple statements)
+    # "Gucken" in simple present tense (describing a habitual or ongoing action)
     - ["Ich gucke jeden Abend Fernsehen", "gucke"]
     - ["Sie guckt aus dem Fenster", "guckt"]
     - ["Er guckt sich den Film an", "guckt"]
-    - ["Wir gucken uns heute die Nachrichten an", "gucken"]
+    - ["Wir gucken uns die Nachrichten an", "gucken"]
     - ["Was guckst du da", "guckst"]
     - ["Die Kinder gucken oft Zeichentrickfilme", "gucken"]
     - ["Sie guckt gerne Serien", "guckt"]
   -
-    # Modal verbs (with gucken as an action to be done)
+    # "Gucken" with modal verbs (as an action that is planned, possible, or speculative)
     - ["Du solltest mal in die Anleitung gucken", "gucken"]
     - ["Ich muss noch nach den Terminen gucken", "gucken"]
     - ["Kannst du mal kurz gucken ob alles stimmt", "gucken"]
@@ -71,7 +73,7 @@ gucken:
     - ["Ich würde lieber was anderes gucken", "gucken"]
     - ["Sie will nicht hinsehen aber guckt trotzdem", "guckt"]
   -
-    # Past tense (geguckt as a completed action)
+    # Past tense (describing a completed action, "geguckt")
     - ["Wir haben gestern einen Film geguckt", "geguckt"]
     - ["Er hat heimlich aus dem Fenster geguckt", "geguckt"]
     - ["Sie hat das ganze Wochenende Serien geguckt", "geguckt"]
@@ -80,7 +82,7 @@ gucken:
     - ["Hast du dir das Video schon geguckt", "geguckt"]
 machen:
   -
-    # Present tense (simple statements)
+    # "Machen" in simple present tense (describing habitual or ongoing actions)
     - ["Ich mache jeden Tag Sport", "mache"]
     - ["Sie macht immer ihr Bett", "macht"]
     - ["Wir machen das Essen zusammen", "machen"]
@@ -89,7 +91,7 @@ machen:
     - ["Sie machen oft Ausflüge ins Umland", "machen"]
     - ["Ich mache mir Sorgen", "mache"]
   -
-    # Modal verbs (e.g., "könnte machen")
+    # "Machen" with modal verbs (as a planned or possible action)
     - ["Er könnte das morgen machen", "machen"]
     - ["Was soll ich damit machen", "machen"]
     - ["Wir dürfen das nicht falsch machen", "machen"]
@@ -98,7 +100,7 @@ machen:
     - ["Kannst du das für mich machen", "machen"]
     - ["Sie muss die Hausaufgaben noch machen", "machen"]
   -
-    # Past tense (gemacht as result or activity)
+    # "Machen" in past tense (describing a completed action)
     - ["Er hat gestern viel Arbeit gemacht", "gemacht"]
     - ["Was hast du mit dem Geld gemacht", "gemacht"]
     - ["Wir haben den Kuchen selbst gemacht", "gemacht"]
