@@ -157,7 +157,6 @@ class ClusterEvaluator:
             reduced_vectors = MDS(n_components=kwargs.get('n_components', 2),
                                    random_state=42).fit_transform(vectors)
         else:
-            self.logger.warning(f"Unsupported dimensionality reduction method: {method}")
             raise ValueError(f"Unsupported dimensionality reduction method: {method}")
         self.logger.debug(f"Completed dimensionality reduction using {method}")
         return reduced_vectors
@@ -220,60 +219,66 @@ class ClusterEvaluator:
 
     def run_all_configurations(self,
                                vectors: np.ndarray,
+                               ref_word: str,
+                               overlap_threshold: float,
+                               n_sentences: int,
+                               sigmoid_steepness: float,
                                dim_methods: List[str],
                                cluster_methods: List[str],
                                sentence_paths: List[Tuple[int, str]],
                                plot_seaborn: bool = False,
                                plot_plt: bool = False,
-                               annotate_plt: bool = False) -> Dict[Tuple[str, str], Dict]:
+                               annotate_plt: bool = False,
+                               save: bool = False) -> pd.DataFrame:
+        results_collection = []
         configurations = {}
 
         for dim_method in dim_methods:
             for cluster_method in cluster_methods:
-                try:
-                    if dim_method == 'LSA':
-                        reduced_vectors = self.dimensionality_reduction(vectors, method='LSA', n_components=2)
-                    elif dim_method == 'PCA':
-                        reduced_vectors = self.dimensionality_reduction(vectors, method='PCA', n_components=2)
-                    elif dim_method == 't-SNE':
-                        reduced_vectors = self.dimensionality_reduction(vectors, method='t-SNE', n_components=2, perplexity=5)
-                    elif dim_method == 'MDS':
-                        reduced_vectors = self.dimensionality_reduction(vectors, method='MDS', n_components=2)
-                    else:
-                        self.logger.warning(f"Unsupported dimensionality reduction method: {dim_method}")
-                        continue
-                except Exception as e:
-                    self.logger.error(f"Error in dimensionality reduction {dim_method}: {e}")
-                    continue
+                print("eva",dim_method,cluster_method)
 
                 try:
-                    if cluster_method in ['KMeans', 'Agglomerative']:
-                        labels = self.cluster_sentences(reduced_vectors, method=cluster_method, n_clusters=3)
-                    elif cluster_method == 'DBSCAN':
-                        labels = self.cluster_sentences(reduced_vectors, method=cluster_method, eps=0.5, min_samples=2)
-                    else:
-                        self.logger.warning(f"Unsupported clustering method: {cluster_method}")
-                        continue
-                except Exception as e:
-                    self.logger.error(f"Error in clustering {cluster_method}: {e}")
-                    continue
+                    print("liys")
+                    reduced_vectors = self.dimensionality_reduction(vectors, method=dim_method, n_components=2)
+                    print("red")
+                    labels = self.cluster_sentences(reduced_vectors, method=cluster_method, n_clusters=3)
+                    print("labels", labels)
 
-                configurations[(dim_method, cluster_method)] = {
-                    'labels': labels,
-                    'reduced_vectors': reduced_vectors
-                }
+                    configurations[(dim_method, cluster_method)] = {
+                        'labels': labels,
+                        'reduced_vectors': reduced_vectors
+                    }
 
-                if plot_plt:
-                    if annotate_plt:
+                    if plot_plt:
                         sentences_for_plot = [sentence for _, sentence in sentence_paths]
                         title = f"{dim_method} + {cluster_method}"
-                        self.plot_clusters(reduced_vectors, labels, title=title, sentences=sentences_for_plot, annotate=True)
+                        self.plot_clusters(reduced_vectors, labels, title=title, sentences=sentences_for_plot, annotate=annotate_plt)
 
+                except Exception as e:
+                    self.logger.error(f"Error in {dim_method} + {cluster_method}: {e}")
+                    continue
+                reference_clusters_ids = self.prepare_reference_clusters_ids()
+                generated_clusters = defaultdict(list)
+                for sentence_id, cluster_id in zip(sorted(self.reference_sentence_ids), labels):
+                    generated_clusters[cluster_id].append(sentence_id)
+                generated_clusters_list = [cluster for cluster in generated_clusters.values()]
+                print("lis")
+                similarity_scores = self.compare_clusters(generated_clusters_list, reference_clusters_ids)
+                print("comp")
+                avg_similarity = np.mean([score for _, _, score in similarity_scores])
+                results_collection.append({
+                    'Ref Word': ref_word,
+                    'Overlap Threshold': overlap_threshold,
+                    'Num Sentences': n_sentences,
+                    'Sigmoid Steepness': sigmoid_steepness,
+                    'Dimensionality Reduction': dim_method,
+                    'Clustering Method': cluster_method,
+                    'Average Jaccard Similarity': avg_similarity
+                })
+        results_df = pd.DataFrame(results_collection)
         if plot_seaborn:
-            configurations_plot = {}
-            for key, value in configurations.items():
-                configurations_plot[key] = (value['reduced_vectors'], value['labels'])
+            configurations_plot = {key: (value['reduced_vectors'], value['labels']) for key, value in configurations.items()}
             self.plot_all_configurations_grid(configurations_plot)
-
-        self.logger.debug("Ran all clustering configurations.")
-        return configurations
+        if save:
+            results_df.to_csv(PLOT_DIR / f'clustering_results_{ref_word}_{n_sentences}.csv', index=False)
+        return results_df

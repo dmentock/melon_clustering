@@ -1,6 +1,6 @@
 import numpy as np
 from collections import defaultdict, deque
-import re
+import random
 import sys
 sys.setrecursionlimit(1500)
 
@@ -15,6 +15,7 @@ class Node:
 class PatternExtractorGraph:
     def __init__(self, seed = 1):
         np.random.seed(seed)
+        random.seed(seed)
         self.preceding_tree = Node('<ROOT>', 0)
         self.following_tree = Node('<ROOT>', 1)
         self.node_counter = 2
