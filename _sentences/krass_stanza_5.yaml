@@ -1,0 +1,110 @@
+krass:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - nsubj
+  - !!python/tuple
+    - 2
+    - 0
+    - root
+  sentence: <1:PRON/nsubj>(Du) <2:AUX/root>(bist) <ROOT>
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 6
+    - advmod
+  - !!python/tuple
+    - 2
+    - 6
+    - mark
+  - !!python/tuple
+    - 3
+    - 6
+    - nsubj
+  - !!python/tuple
+    - 4
+    - 6
+    - advmod
+  - !!python/tuple
+    - 5
+    - 6
+    - nsubj
+  - !!python/tuple
+    - 6
+    - 0
+    - root
+  - !!python/tuple
+    - 7
+    - 6
+    - obj
+  - !!python/tuple
+    - 8
+    - 6
+    - advmod
+  sentence: "<1:ADV/advmod>(So) <2:SCONJ/mark>(als) <3:PRON/nsubj>(ich) <4:ADV/advmod>(so)\
+    \ <5:PRON/nsubj>(ich) <6:VERB/root>(f\xFChle) <7:PRON/obj>(mich) <8:ADV/advmod>(grad)\
+    \ <ROOT>"
+krasser:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 3
+    - nsubj
+  - !!python/tuple
+    - 2
+    - 3
+    - cop
+  - !!python/tuple
+    - 3
+    - 0
+    - root
+  - !!python/tuple
+    - 4
+    - 0
+    - root
+  - !!python/tuple
+    - 5
+    - 8
+    - cc
+  - !!python/tuple
+    - 6
+    - 8
+    - amod
+  - !!python/tuple
+    - 7
+    - 8
+    - case
+  - !!python/tuple
+    - 8
+    - 4
+    - conj
+  sentence: <1:PRON/nsubj>(Du) <2:AUX/cop>(bist) <3:DET/root>(kein) <ROOT> <4:NOUN/root>(Typ)
+    <5:CCONJ/cc>(sondern) <6:ADJ/amod>(weit) <7:ADP/case>(unterm) <8:NOUN/conj>(Standardrand)
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 3
+    - advmod
+  - !!python/tuple
+    - 2
+    - 3
+    - nsubj
+  - !!python/tuple
+    - 3
+    - 0
+    - root
+  - !!python/tuple
+    - 4
+    - 5
+    - advmod
+  - !!python/tuple
+    - 5
+    - 3
+    - obj
+  - !!python/tuple
+    - 6
+    - 0
+    - root
+  sentence: <1:ADV/advmod>(doch) <2:PRON/nsubj>(du) <3:VERB/root>(musst) <4:ADV/advmod>(noch)
+    <5:DET/obj>(viel) <ROOT> <6:AUX/root>(werden)

@@ -1,7 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from typing import List, Dict, Tuple, Set
 import numpy as np
 import re
@@ -17,26 +17,27 @@ class ClusterEvaluator:
         self.sentence_id_to_original = {}
         self.reference_clusters = reference_clusters
         self.reference_sentence_ids = set()
-        self.sentences_dict = defaultdict(list)
+        self.sentences_dict = OrderedDict()
 
-    def add_sentences(self, sentence_clusters: List[List[Tuple[str, str]]], is_reference: bool = False) -> Dict[str, List[Tuple[int, str]]]:
+    def add_sentences(self, sentence_clusters: List[List[Tuple[str, str]]], is_reference: bool = False):
         sentence_id = max(self.sentence_id_to_original.keys()) + 1 if self.sentence_id_to_original else 0
         for cluster in sentence_clusters:
             for sentence, word in cluster:
                 processed_sentence = self.replace_with_root(sentence, word)
+                if word.lower() not in self.sentences_dict:
+                    self.sentences_dict[word.lower()] = []
                 self.sentences_dict[word.lower()].append((sentence_id, processed_sentence))
                 self.sentence_id_to_original[sentence_id] = sentence
                 if is_reference:
                     self.reference_sentence_ids.add(sentence_id)
                 sentence_id += 1
-        return self.sentences_dict
 
-    def add_reference_sentences(self, reference_clusters: List[List[Tuple[str, str]]]) -> Dict[str, List[Tuple[int, str]]]:
-        return self.add_sentences(reference_clusters, is_reference=True)
+    def add_reference_sentences(self, reference_clusters: List[List[Tuple[str, str]]]):
+        self.add_sentences(reference_clusters, is_reference=True)
 
-    def add_additional_sentences(self, additional_sentences: Dict[str, List[str]]) -> Dict[str, List[Tuple[int, str]]]:
+    def add_additional_sentences(self, additional_sentences: Dict[str, List[str]]):
         additional_clusters = [[(sentence, word)] for word, sentences in additional_sentences.items() for sentence in sentences]
-        return self.add_sentences(additional_clusters)
+        self.add_sentences(additional_clusters)
 
     def normalize_sentence(self, sentence: str) -> str:
         sentence = sentence.replace('<START>', '').replace('<END>', '').replace('<ROOT>', '').strip()
@@ -72,6 +73,8 @@ class ClusterEvaluator:
         return len(intersection) / len(union)
 
     def compare_clusters(self, generated_clusters: List[List[int]], reference_clusters_ids: List[Set[int]]) -> List[Tuple[int, int, float]]:
+        print("generated_clusters", len(generated_clusters), generated_clusters)
+        print("reference_clusters_ids", len(reference_clusters_ids), reference_clusters_ids)
         similarity_scores = []
         for ref_idx, ref_cluster in enumerate(reference_clusters_ids):
             best_similarity = 0.0
@@ -229,20 +232,21 @@ class ClusterEvaluator:
                                plot_seaborn: bool = False,
                                plot_plt: bool = False,
                                annotate_plt: bool = False,
-                               save: bool = False) -> pd.DataFrame:
+                               save: bool = False,
+                               **extra_keys) -> pd.DataFrame:
         results_collection = []
         configurations = {}
 
         for dim_method in dim_methods:
             for cluster_method in cluster_methods:
-                print("eva",dim_method,cluster_method)
+                # print("eva",dim_method,cluster_method)
 
                 try:
-                    print("liys")
+                    # print("liys")
                     reduced_vectors = self.dimensionality_reduction(vectors, method=dim_method, n_components=2)
-                    print("red")
+                    # print("red")
                     labels = self.cluster_sentences(reduced_vectors, method=cluster_method, n_clusters=3)
-                    print("labels", labels)
+                    # print("labels", labels)
 
                     configurations[(dim_method, cluster_method)] = {
                         'labels': labels,
@@ -262,11 +266,11 @@ class ClusterEvaluator:
                 for sentence_id, cluster_id in zip(sorted(self.reference_sentence_ids), labels):
                     generated_clusters[cluster_id].append(sentence_id)
                 generated_clusters_list = [cluster for cluster in generated_clusters.values()]
-                print("lis")
+                # print("lis")
                 similarity_scores = self.compare_clusters(generated_clusters_list, reference_clusters_ids)
-                print("comp")
+                # print("comp")
                 avg_similarity = np.mean([score for _, _, score in similarity_scores])
-                results_collection.append({
+                result = {
                     'Ref Word': ref_word,
                     'Overlap Threshold': overlap_threshold,
                     'Num Sentences': n_sentences,
@@ -274,7 +278,10 @@ class ClusterEvaluator:
                     'Dimensionality Reduction': dim_method,
                     'Clustering Method': cluster_method,
                     'Average Jaccard Similarity': avg_similarity
-                })
+                }
+                if extra_keys:
+                    result.update(extra_keys)
+                results_collection.append(result)
         results_df = pd.DataFrame(results_collection)
         if plot_seaborn:
             configurations_plot = {key: (value['reduced_vectors'], value['labels']) for key, value in configurations.items()}

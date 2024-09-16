@@ -1,0 +1,164 @@
+geguckt:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - det
+  - !!python/tuple
+    - 2
+    - 3
+    - obl
+  - !!python/tuple
+    - 3
+    - 0
+    - root
+  - !!python/tuple
+    - 4
+    - 5
+    - cc
+  - !!python/tuple
+    - 5
+    - 3
+    - conj
+  - !!python/tuple
+    - 6
+    - 7
+    - case
+  - !!python/tuple
+    - 7
+    - 5
+    - obl
+  sentence: <1:DET/det>(jeden) <2:NOUN/obl>(Tag) <3:VERB/root>(besucht) <4:CCONJ/cc>(und)
+    <5:VERB/conj>(hat) <6:ADP/case>(nach) <7:PRON/obl>(mir) <ROOT>
+guck:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 0
+    - root
+  - !!python/tuple
+    - 2
+    - 9
+    - advmod
+  - !!python/tuple
+    - 3
+    - 9
+    - mark
+  - !!python/tuple
+    - 4
+    - 9
+    - nsubj
+  - !!python/tuple
+    - 5
+    - 9
+    - advmod
+  - !!python/tuple
+    - 6
+    - 8
+    - case
+  - !!python/tuple
+    - 7
+    - 8
+    - det
+  - !!python/tuple
+    - 8
+    - 9
+    - obl
+  - !!python/tuple
+    - 9
+    - 0
+    - root
+  sentence: <1:PRON/root>(Ich) <ROOT> <2:ADV/advmod>(mal) <3:SCONJ/mark>(ob) <4:PRON/nsubj>(ich)
+    <5:ADV/advmod>(da) <6:ADP/case>(mit) <7:DET/det>(einem) <8:NOUN/obl>(Seil) <9:VERB/root>(runterkomm)
+gucken:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 0
+    - root
+  - !!python/tuple
+    - 2
+    - 5
+    - mark
+  - !!python/tuple
+    - 3
+    - 4
+    - det
+  - !!python/tuple
+    - 4
+    - 5
+    - nsubj
+  - !!python/tuple
+    - 5
+    - 0
+    - root
+  sentence: <1:NOUN/root>(Mal) <ROOT> <2:SCONJ/mark>(wie) <3:DET/det>(die) <4:NOUN/nsubj>(Resonanz)
+    <5:AUX/root>(ist)
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 0
+    - root
+  - !!python/tuple
+    - 2
+    - 1
+    - nsubj
+  - !!python/tuple
+    - 3
+    - 1
+    - obj
+  - !!python/tuple
+    - 4
+    - 1
+    - advmod
+  - !!python/tuple
+    - 5
+    - 1
+    - aux
+  - !!python/tuple
+    - 6
+    - 1
+    - nsubj
+  - !!python/tuple
+    - 7
+    - 8
+    - case
+  - !!python/tuple
+    - 8
+    - 1
+    - obl
+  sentence: "<1:VERB/root>(H\xE4tten) <2:PRON/nsubj>(wir) <3:PRON/obj>(das) <4:PART/advmod>(nicht)\
+    \ <5:AUX/aux>(m\xFCssten) <6:PRON/nsubj>(wir) <7:ADP/case>(ausm) <8:NOUN/obl>(Fenster)\
+    \ <ROOT>"
+guckt:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 6
+    - mark
+  - !!python/tuple
+    - 2
+    - 6
+    - nsubj
+  - !!python/tuple
+    - 3
+    - 6
+    - advmod
+  - !!python/tuple
+    - 4
+    - 6
+    - advmod
+  - !!python/tuple
+    - 5
+    - 6
+    - advmod
+  - !!python/tuple
+    - 6
+    - 0
+    - root
+  - !!python/tuple
+    - 7
+    - 6
+    - cc
+  sentence: "<1:SCONJ/mark>(Dass) <2:PRON/nsubj>(man) <3:PART/advmod>(nicht) <4:ADV/advmod>(einfach)\
+    \ <5:ADJ/advmod>(unt\xE4tig) <6:VERB/root>(rumsitzt) <7:CCONJ/cc>(und) <ROOT>"

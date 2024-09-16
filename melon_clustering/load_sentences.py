@@ -3,7 +3,7 @@ import re
 from melon_clustering import SENTENCES_DIR
 import stanza
 from pathlib import Path
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 _nlp_stanza = None
 
@@ -107,7 +107,7 @@ class Loader:
         for sentence in sentences:
             pos_sentence = []
             dependencies = []
-            print("sentence.split('<ROOT>')", sentence.split('<ROOT>'))
+            # print("sentence.split('<ROOT>')", sentence.split('<ROOT>'))
             if '<ROOT>' in sentence:
                 before_root, after_root = sentence.split('<ROOT>')
                 # Process before_root with initial offset 0
@@ -136,35 +136,36 @@ class Loader:
         return processed_sentences_dict
 
     @staticmethod
-    def reduce_sentences(sentences_dict, n_sentences):
+    def reduce_sentences(sentences_dict, n_sentences, seed=None):
         import random
+        if seed is not None:
+            random.seed(seed)
         all_sentences = [(key, sentence) for key, sentences in sentences_dict.items() for sentence in sentences]
         random.shuffle(all_sentences)
         all_sentences = all_sentences[:n_sentences]
         reduced_dict = defaultdict(list)
         for key, sentence in all_sentences:
             reduced_dict[key].append(sentence)
-        return dict(reduced_dict)
-
+        return reduced_dict
 
     @staticmethod
     def load_sentences_from_word(word, source_lang, cache = True, use_cache = True, preprocessor = None, n_sentences = None):
         if n_sentences==0:
             return {}
-        path = SENTENCES_DIR / (word + (f"_{preprocessor}" if preprocessor else '') + '.yaml')
+        path = SENTENCES_DIR / (word + (f"_{preprocessor}" if preprocessor else '') + (f"_{n_sentences}" if n_sentences else '') + '.yaml')
         if use_cache:
             if path.exists():
                 with open(path, 'r', encoding='utf-8') as f:
                     sentences_dict = yaml.load(f, Loader=yaml.FullLoader)
                     # sentences_dict = yaml.safe_load(f)
-                    return sentences_dict if not n_sentences else Loader.reduce_sentences(sentences_dict, n_sentences)
+                    return OrderedDict(sentences_dict) if not n_sentences else Loader.reduce_sentences(sentences_dict, n_sentences)
         sentences_dict = Loader.load_db_sentences(word, source_lang)
         sentences_dict = sentences_dict if not n_sentences else Loader.reduce_sentences(sentences_dict, n_sentences)
         result = Loader.load_sentences(sentences_dict, source_lang, preprocessor=preprocessor)
         if cache:
             with open(SENTENCES_DIR / path, 'w') as f:
                 yaml.dump(result, f)
-        return result
+        return OrderedDict(result)
 
     @staticmethod
     def extract_stanza_tags(sentence_info):

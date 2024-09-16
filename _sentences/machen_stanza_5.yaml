@@ -1,0 +1,154 @@
+gemacht:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - nsubj
+  - !!python/tuple
+    - 2
+    - 0
+    - root
+  - !!python/tuple
+    - 3
+    - 2
+    - advmod
+  - !!python/tuple
+    - 4
+    - 5
+    - advmod
+  - !!python/tuple
+    - 5
+    - 2
+    - advmod
+  - !!python/tuple
+    - 6
+    - 7
+    - det
+  - !!python/tuple
+    - 7
+    - 2
+    - obj
+  sentence: <1:PRON/nsubj>(Ich) <2:VERB/root>(habe) <3:ADV/advmod>(auch) <4:ADV/advmod>(schon)
+    <5:ADV/advmod>(mal) <6:DET/det>(ein) <7:NOUN/obj>(Video) <ROOT>
+machen:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 3
+    - case
+  - !!python/tuple
+    - 2
+    - 3
+    - det
+  - !!python/tuple
+    - 3
+    - 9
+    - nmod
+  - !!python/tuple
+    - 4
+    - 9
+    - aux
+  - !!python/tuple
+    - 5
+    - 9
+    - nsubj
+  - !!python/tuple
+    - 6
+    - 9
+    - advmod
+  - !!python/tuple
+    - 7
+    - 8
+    - det
+  - !!python/tuple
+    - 8
+    - 9
+    - obj
+  - !!python/tuple
+    - 9
+    - 0
+    - root
+  sentence: <1:ADP/case>(Bei) <2:DET/det>(dem) <3:NOUN/nmod>(Hochgehen) <4:AUX/aux>(soll)
+    <5:PRON/nsubj>(er) <6:PART/advmod>(nicht) <7:DET/det>(die) <8:NOUN/obj>(Lichterketten)
+    <9:ADJ/root>(kaputt) <ROOT>
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - nsubj
+  - !!python/tuple
+    - 2
+    - 0
+    - root
+  - !!python/tuple
+    - 3
+    - 2
+    - nsubj
+  - !!python/tuple
+    - 4
+    - 2
+    - ccomp
+  - !!python/tuple
+    - 5
+    - 4
+    - advmod
+  - !!python/tuple
+    - 6
+    - 4
+    - obj
+  - !!python/tuple
+    - 7
+    - 8
+    - case
+  - !!python/tuple
+    - 8
+    - 4
+    - obl
+  sentence: "<1:PRON/nsubj>(Ich) <2:VERB/root>(glaube) <3:PRON/nsubj>(ich) <4:VERB/ccomp>(w\xFC\
+    rde) <5:ADV/advmod>(auch) <6:PROPN/obj>(Malle) <7:ADP/case>(f\xFCr) <8:DET/obl>(alle)\
+    \ <ROOT>"
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 0
+    - root
+  - !!python/tuple
+    - 2
+    - 0
+    - root
+  - !!python/tuple
+    - 3
+    - 2
+    - advmod
+  sentence: <1:PRON/root>(Das) <ROOT> <2:PRON/root>(wir) <3:PART/advmod>(nicht)
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 3
+    - aux
+  - !!python/tuple
+    - 2
+    - 3
+    - nsubj
+  - !!python/tuple
+    - 3
+    - 0
+    - root
+  - !!python/tuple
+    - 4
+    - 3
+    - nsubj
+  - !!python/tuple
+    - 5
+    - 6
+    - advmod
+  - !!python/tuple
+    - 6
+    - 0
+    - root
+  - !!python/tuple
+    - 7
+    - 6
+    - advmod
+  sentence: <1:AUX/aux>(Muss) <2:PRON/nsubj>(man) <3:VERB/root>(zugreifen) <4:PRON/nsubj>(wir)
+    <ROOT> <5:ADV/advmod>(so) <6:NOUN/root>(Smoothie) <7:ADV/advmod>(dann)

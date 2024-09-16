@@ -1,0 +1,155 @@
+schlimm:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 0
+    - root
+  - !!python/tuple
+    - 2
+    - 1
+    - advmod
+  - !!python/tuple
+    - 3
+    - 1
+    - advmod
+  - !!python/tuple
+    - 4
+    - 1
+    - nsubj
+  - !!python/tuple
+    - 5
+    - 1
+    - cop
+  - !!python/tuple
+    - 6
+    - 7
+    - advmod
+  - !!python/tuple
+    - 7
+    - 1
+    - advmod
+  sentence: "<1:VERB/root>(sagte) <2:ADV/advmod>(aber) <3:ADV/advmod>(auch) <4:PRON/nsubj>(es)\
+    \ <5:AUX/cop>(w\xE4r) <6:ADV/advmod>(ja) <7:PART/advmod>(nicht) <ROOT>"
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - nsubj
+  - !!python/tuple
+    - 2
+    - 0
+    - root
+  - !!python/tuple
+    - 3
+    - 5
+    - case
+  - !!python/tuple
+    - 4
+    - 5
+    - det
+  - !!python/tuple
+    - 5
+    - 2
+    - obl
+  - !!python/tuple
+    - 6
+    - 2
+    - advmod
+  - !!python/tuple
+    - 7
+    - 9
+    - mark
+  - !!python/tuple
+    - 8
+    - 9
+    - nsubj
+  - !!python/tuple
+    - 9
+    - 2
+    - advcl
+  - !!python/tuple
+    - 10
+    - 9
+    - advmod
+  - !!python/tuple
+    - 11
+    - 9
+    - advmod
+  - !!python/tuple
+    - 12
+    - 0
+    - root
+  sentence: <1:PRON/nsubj>(Ich) <2:VERB/root>(denke) <3:ADP/case>(wegen) <4:DET/det>(den)
+    <5:NOUN/obl>(Nerven) <6:ADV/advmod>(ja) <7:SCONJ/mark>(weil) <8:PRON/nsubj>(ich)
+    <9:VERB/advcl>(hab) <10:ADV/advmod>(da) <11:ADV/advmod>(sehr) <ROOT> <12:VERB/root>(gedacht)
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - cc
+  - !!python/tuple
+    - 2
+    - 0
+    - root
+  - !!python/tuple
+    - 3
+    - 4
+    - advmod
+  - !!python/tuple
+    - 4
+    - 2
+    - advmod
+  sentence: <1:CCONJ/cc>(Aber) <2:DET/root>(alles) <3:ADV/advmod>(halb) <4:ADV/advmod>(so)
+    <ROOT>
+schlimme:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 2
+    - advmod
+  - !!python/tuple
+    - 2
+    - 3
+    - advmod
+  - !!python/tuple
+    - 3
+    - 4
+    - nsubj
+  - !!python/tuple
+    - 4
+    - 0
+    - root
+  - !!python/tuple
+    - 5
+    - 0
+    - root
+  - !!python/tuple
+    - 6
+    - 7
+    - case
+  - !!python/tuple
+    - 7
+    - 5
+    - nmod
+  sentence: "<1:ADV/advmod>(Echt) <2:ADV/advmod>(jetzt) <3:PRON/nsubj>(das) <4:AUX/root>(waren)\
+    \ <ROOT> <5:NOUN/root>(Jahre) <6:ADP/case>(f\xFCr) <7:PRON/nmod>(mich)"
+schlimmer:
+- dependencies:
+  - !!python/tuple
+    - 1
+    - 3
+    - cc
+  - !!python/tuple
+    - 2
+    - 3
+    - nsubj
+  - !!python/tuple
+    - 3
+    - 0
+    - root
+  - !!python/tuple
+    - 4
+    - 3
+    - advmod
+  sentence: <1:CCONJ/cc>(Und) <2:PRON/nsubj>(es) <3:VERB/root>(kommt) <4:ADV/advmod>(noch)
+    <ROOT>
