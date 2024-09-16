@@ -4,82 +4,104 @@ krass:
     - ["Krass das habe ich noch nie gesehen", "Krass"]
     - ["Krass das war wirklich beeindruckend", "Krass"]
     - ["Krass wie schnell du das geschafft hast", "Krass"]
+    - ["Krass das hätte ich nicht erwartet", "Krass"]
+    - ["Krass das ist ja unglaublich", "Krass"]
+    - ["Krass das kann doch nicht wahr sein", "Krass"]
+    - ["Krass wie gut du das gemacht hast", "Krass"]
   -
     # "krass" as an adjective modifying a noun
     - ["Das war eine krass schwierige Entscheidung", "krass"]
     - ["Er hatte eine krass interessante Idee", "krass"]
     - ["Die krasse Veränderung hat alle überrascht", "krasse"]
+    - ["Sie hat eine krass schwere Aufgabe übernommen", "krass"]
+    - ["Das ist eine krass neue Entwicklung", "krass"]
+    - ["Seine krasse Meinung hat viele schockiert", "krasse"]
+    - ["Die krassen Anforderungen machen es schwer", "krassen"]
   -
     # "krass" as an adverb modifying an adjective or verb
     - ["Die Party war krass gut organisiert", "krass"]
     - ["Er hat das krass schnell erledigt", "krass"]
     - ["Sie war krass begeistert von dem Ergebnis", "krass"]
     - ["Der Vortrag war krass langweilig", "krass"]
-
-gaffen:
+    - ["Die Aufgaben wurden krass gut bewältigt", "krass"]
+    - ["Das Auto fährt krass schnell", "krass"]
+    - ["Er hat sich krass gut vorbereitet", "krass"]
+schlimm:
   -
-    # "gaffen" in simple past tense
-    - ["Die Leute gafften als der Unfall passierte", "gafften"]
-    - ["Alle gafften auf das große Feuerwerk", "gafften"]
-    - ["Während alle gafften passierte etwas Unerwartetes", "gafften"]
+    # Simple descriptive usage (adjective describing a situation)
+    - ["Das Wetter ist heute wirklich schlimm", "schlimm"]
+    - ["Die Lage ist schlimmer als gedacht", "schlimmer"]
+    - ["Es war schlimm was passiert ist", "schlimm"]
+    - ["Das ist eine schlimme Situation", "schlimme"]
+    - ["Ihr Zustand hat sich plötzlich verschlimmert", "verschlimmert"]
+    - ["Das war das Schlimmste was passieren konnte", "Schlimmste"]
   -
-    # "gaffen" in present tense
-    - ["Er gafft immer wenn etwas Ungewöhnliches passiert", "gafft"]
-    - ["Die Leute gaffen ständig bei Baustellen", "gaffen"]
-    - ["Warum gafft er immer wenn er vorbeigeht", "gafft"]
+    # Comparative and superlative forms
+    - ["Das war der schlimmste Tag meines Lebens", "schlimmste"]
+    - ["Es könnte viel schlimmer sein", "schlimmer"]
+    - ["Das ist schlimmer als das was ich erwartet habe", "schlimmer"]
+    - ["Sie hat das schlimmste Ergebnis bekommen", "schlimmste"]
+    - ["Es war das schlimmste was ich je gesehen habe", "schlimmste"]
+    - ["Die schlimmste Phase ist jetzt vorbei", "schlimmste"]
   -
-    # "gaffen" with a modal verb
-    - ["Sie konnte nicht aufhören zu gaffen", "gaffen"]
-    - ["Man sollte nicht so dreist gaffen", "gaffen"]
-    - ["Er wollte nicht dass alle ihn gafften", "gafften"]
-
-unglaubwuerdig:
+    # Idiomatic and complex usage
+    - ["Es ist nicht so schlimm wie es aussieht", "schlimm"]
+    - ["So schlimm ist es wirklich nicht", "schlimm"]
+    - ["Wie schlimm war es wirklich", "schlimm"]
+    - ["Ich habe etwas Schlimmes gesehen", "Schlimmes"]
+    - ["Das Schlimmste steht uns noch bevor", "Schlimmste"]
+    - ["Es gibt Schlimmeres auf der Welt", "Schlimmeres"]
+gucken:
   -
-    # "unglaubwürdig" as an adjective modifying a noun
-    - ["Seine Geschichte war völlig unglaubwürdig", "unglaubwürdig"]
-    - ["Die Erklärung war unglaubwürdig und verwirrend", "unglaubwürdig"]
-    - ["Das klingt einfach zu unglaubwürdig um wahr zu sein", "unglaubwürdig"]
+    # Present tense (simple statements)
+    - ["Ich gucke jeden Abend Fernsehen", "gucke"]
+    - ["Sie guckt aus dem Fenster", "guckt"]
+    - ["Er guckt sich den Film an", "guckt"]
+    - ["Wir gucken uns heute die Nachrichten an", "gucken"]
+    - ["Was guckst du da", "guckst"]
+    - ["Die Kinder gucken oft Zeichentrickfilme", "gucken"]
+    - ["Sie guckt gerne Serien", "guckt"]
   -
-    # Comparative or superlative forms of "unglaubwürdig"
-    - ["Er war noch unglaubwürdiger als der erste Zeuge", "unglaubwürdiger"]
-    - ["Das ist das unglaubwürdigste was ich je gehört habe", "unglaubwürdigste"]
-    - ["Ihre Darstellung wurde zunehmend unglaubwürdiger", "unglaubwürdiger"]
+    # Modal verbs (with gucken as an action to be done)
+    - ["Du solltest mal in die Anleitung gucken", "gucken"]
+    - ["Ich muss noch nach den Terminen gucken", "gucken"]
+    - ["Kannst du mal kurz gucken ob alles stimmt", "gucken"]
+    - ["Wir könnten heute Abend einen Film gucken", "gucken"]
+    - ["Willst du mit mir die Show gucken", "gucken"]
+    - ["Ich würde lieber was anderes gucken", "gucken"]
+    - ["Sie will nicht hinsehen aber guckt trotzdem", "guckt"]
   -
-    # "unglaubwürdig" in abstract or more complex sentence structures
-    - ["Obwohl seine Aussagen unglaubwürdig wirkten überzeugte er viele", "unglaubwürdig"]
-    - ["Es ist unglaubwürdig dass er so schnell laufen konnte", "unglaubwürdig"]
-    - ["Die Beweise waren schlichtweg unglaubwürdig", "unglaubwürdig"]
-
-freude:
+    # Past tense (geguckt as a completed action)
+    - ["Wir haben gestern einen Film geguckt", "geguckt"]
+    - ["Er hat heimlich aus dem Fenster geguckt", "geguckt"]
+    - ["Sie hat das ganze Wochenende Serien geguckt", "geguckt"]
+    - ["Ich habe schon nach den Ergebnissen geguckt", "geguckt"]
+    - ["Die Kinder haben den ganzen Tag Videos geguckt", "geguckt"]
+    - ["Hast du dir das Video schon geguckt", "geguckt"]
+machen:
   -
-    # "Freude" as a noun in a descriptive sentence
-    - ["Die Freude war ihr ins Gesicht geschrieben", "Freude"]
-    - ["Die Freude über seinen Erfolg war spürbar", "Freude"]
-    - ["Die Freude über den Erfolg war riesig", "Freude"]
+    # Present tense (simple statements)
+    - ["Ich mache jeden Tag Sport", "mache"]
+    - ["Sie macht immer ihr Bett", "macht"]
+    - ["Wir machen das Essen zusammen", "machen"]
+    - ["Er macht das wirklich gut", "macht"]
+    - ["Was machst du gerade", "machst"]
+    - ["Sie machen oft Ausflüge ins Umland", "machen"]
+    - ["Ich mache mir Sorgen", "mache"]
   -
-    # "Freude" in a possessive or more complex phrase
-    - ["Er verspürte große Freude bei der Arbeit", "Freude"]
-    - ["Er konnte seine Freude kaum verbergen", "Freude"]
-    - ["Ihre Freude und Begeisterung waren ansteckend", "Freude"]
+    # Modal verbs (e.g., "könnte machen")
+    - ["Er könnte das morgen machen", "machen"]
+    - ["Was soll ich damit machen", "machen"]
+    - ["Wir dürfen das nicht falsch machen", "machen"]
+    - ["Man kann so viel damit machen", "machen"]
+    - ["Ich würde das nicht machen", "machen"]
+    - ["Kannst du das für mich machen", "machen"]
+    - ["Sie muss die Hausaufgaben noch machen", "machen"]
   -
-    # "Freude" in idiomatic or abstract expressions
-    - ["Mit großer Freude nahm sie das Angebot an", "Freude"]
-    - ["Die Freude am Leben war ihr immer wichtig", "Freude"]
-    - ["Es war eine Freude mit ihm zu arbeiten", "Freude"]
-
-sauber:
-  -
-    # "sauber" as an adjective describing a state of cleanliness
-    - ["Das Haus war endlich sauber", "sauber"]
-    - ["Die Küche war sauber und ordentlich", "sauber"]
-    - ["Das Zimmer ist jetzt sauber", "sauber"]
-  -
-    # "sauber" as an adverb describing actions
-    - ["Er hat den Boden sauber gewischt", "sauber"]
-    - ["Sie hat die Aufgabe sauber erledigt", "sauber"]
-    - ["Das Problem wurde sauber gelöst", "sauber"]
-  -
-    # "Sauber" as an expression meaning "Well done"
-    - ["Sauber das hast du gut gemacht", "Sauber"]
-    - ["Sauber endlich haben wir es geschafft", "Sauber"]
-    - ["Sauber das war wirklich beeindruckend", "Sauber"]
+    # Past tense (gemacht as result or activity)
+    - ["Er hat gestern viel Arbeit gemacht", "gemacht"]
+    - ["Was hast du mit dem Geld gemacht", "gemacht"]
+    - ["Wir haben den Kuchen selbst gemacht", "gemacht"]
+    - ["Sie hat ihre Arbeit gut gemacht", "gemacht"]
+    - ["Ich habe das schon gestern gemacht", "gemacht"]
+    - ["Er hat das wirklich gut gemacht", "gemacht"]
